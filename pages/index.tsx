@@ -82,7 +82,8 @@ const Logo = styled.span`
 
 const Home: NextPage = () => {
   // prettier-ignore
-  const [board, setBoard] = useState([
+  //const [board, setBoard] = useState([
+  const [board] = useState([
     [0, 9, 9, 9, 9, 9, 9, 9, 9],
     [9, 1, 9, 9, 9, 9, 9, 9, 9],
     [9, 9, 2, 9, 9, 9, 9, 9, 9],
