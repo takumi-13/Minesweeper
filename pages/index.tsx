@@ -62,6 +62,7 @@ const Block = styled.div`
   width: 50px;
   height: 50px;
   border: 1px solid white;
+  float: left;
 `
 
 const Logo = styled.span`
@@ -81,8 +82,7 @@ const Home: NextPage = () => {
       <Main>
         <Title>Welcome to Minesweeper!!</Title>
         <Board>
-          <Block />
-          <Block />
+          <Block /> <Block />
           <Block />
         </Board>
       </Main>
