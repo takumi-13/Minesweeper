@@ -58,16 +58,11 @@ const Board = styled.canvas`
   height: 450px;
   background-color: grey;
 `
-/*
-function drawBoard(): void {
-  const canvas = document.createElement('canvas');
-  canvas.setAttribute('width', '450px')
-  canvas.setAttribute('height', '450px')
-  const ctx = canvas.getContext('2d')
-  ctx.beginPath()
-  ctx.rect(25, 25, 475, 475)
-}
-*/
+const Block = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 1px solid white;
+`
 
 const Logo = styled.span`
   height: 1em;
@@ -85,7 +80,13 @@ const Home: NextPage = () => {
 
       <Main>
         <Title>Welcome to Minesweeper!!</Title>
-        <Board></Board>
+        <Board>
+          <Block />
+          <Block />
+          <Block />
+        </Board>
+
+        <Block />
       </Main>
 
       <Footer>
