@@ -58,6 +58,7 @@ const Board = styled.div`
   height: 450px;
   background-color: grey;
 `
+
 const Block = styled.div`
   width: 50px;
   height: 50px;
@@ -82,7 +83,8 @@ const Home: NextPage = () => {
       <Main>
         <Title>Welcome to Minesweeper!!</Title>
         <Board>
-          <Block /> <Block />
+          <Block /> 
+          <Block />
           <Block />
         </Board>
       </Main>
