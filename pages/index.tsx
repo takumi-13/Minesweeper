@@ -64,8 +64,8 @@ const PushedBlock = styled.div`
   float: left;
   width: 50px;
   height: 50px;
-  border: 1px solid black;
   background-color: white;
+  border: 1px solid black;
 `
 
 const UnPushedBlock = styled.div`
