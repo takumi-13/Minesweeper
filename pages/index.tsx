@@ -72,7 +72,7 @@ const UnPushedBlock = styled.div`
   float: left;
   width: 50px;
   height: 50px;
-  border: 1px solid black;
+  border: 1px solid white;
 `
 
 const Logo = styled.span`
