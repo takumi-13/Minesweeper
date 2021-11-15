@@ -38,65 +38,6 @@ const Title = styled.h1`
   }
 `
 
-const Description = styled.p`
-  font-size: 1.5rem;
-  line-height: 1.5;
-  text-align: center;
-`
-
-const Code = styled.code`
-  padding: 0.75rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
-  font-size: 1.1rem;
-  background: #fafafa;
-  border-radius: 5px;
-`
-
-const Grid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  max-width: 800px;
-  margin-top: 3rem;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    width: 100%;
-  }
-`
-
-const Card = styled.a`
-  width: 45%;
-  padding: 1.5rem;
-  margin: 1rem;
-  color: inherit;
-  text-align: left;
-  text-decoration: none;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
-
-  :hover,
-  :focus,
-  :active {
-    color: #0070f3;
-    border-color: #0070f3;
-  }
-
-  h2 {
-    margin: 0 0 1rem 0;
-    font-size: 1.5rem;
-  }
-
-  p {
-    margin: 0;
-    font-size: 1.25rem;
-    line-height: 1.5;
-  }
-`
-
 const Footer = styled.footer`
   display: flex;
   align-items: center;
@@ -144,7 +85,6 @@ const Home: NextPage = () => {
 
       <Main>
         <Title>Welcome to Minesweeper!!</Title>
-
         <Board></Board>
       </Main>
 
