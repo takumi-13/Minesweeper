@@ -53,7 +53,7 @@ const Footer = styled.footer`
     justify-content: center;
   }
 `
-const Board = styled.canvas`
+const Board = styled.div`
   width: 450px;
   height: 450px;
   background-color: grey;
@@ -85,8 +85,6 @@ const Home: NextPage = () => {
           <Block />
           <Block />
         </Board>
-
-        <Block />
       </Main>
 
       <Footer>
