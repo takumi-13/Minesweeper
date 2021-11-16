@@ -60,19 +60,20 @@ const Board = styled.div`
   background-color: grey;
 `
 
-const PushedBlock = styled.div`
+const Block = styled.div`
   float: left;
   width: 50px;
   height: 50px;
-  background-color: white;
-  border: 1px solid black;
+  border: 1px solid;
 `
 
-const UnPushedBlock = styled.div`
-  float: left;
-  width: 50px;
-  height: 50px;
-  border: 1px solid white;
+const PushedBlock = styled(Block)`
+  background-color: white;
+  border-color: black;
+`
+
+const UnPushedBlock = styled(Block)`
+  border-color: white;
 `
 
 const Logo = styled.span`
