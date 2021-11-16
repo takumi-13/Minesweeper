@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -63,7 +64,16 @@ const Block = styled.div`
   float: left;
   width: 50px;
   height: 50px;
-  border: 1px solid white;
+  border: 1px solid;
+`
+
+const PushedBlock = styled(Block)`
+  background-color: white;
+  border-color: black;
+`
+
+const UnPushedBlock = styled(Block)`
+  border-color: white;
 `
 
 const Logo = styled.span`
@@ -72,6 +82,20 @@ const Logo = styled.span`
 `
 
 const Home: NextPage = () => {
+  // prettier-ignore
+  //const [board, setBoard] = useState([
+  const [board] = useState([
+    [0, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 1, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 2, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 3, 9, 9, 9, 9, 9],
+    [9, 6, 9, 9, 4, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 5, 9, 9, 9],
+    [9, 7, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 8, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+  ])
+
   return (
     <Container>
       <Head>
@@ -83,9 +107,15 @@ const Home: NextPage = () => {
       <Main>
         <Title>Welcome to Minesweeper!!</Title>
         <Board>
-          <Block />
-          <Block />
-          <Block />
+          {board.map((row, y) =>
+            row.map((num, x) =>
+              num === 9 ? (
+                <UnPushedBlock key={`${x}-${y}`} />
+              ) : (
+                <PushedBlock key={`${x}-${y}`}> {num !== 0 && num} </PushedBlock>
+              )
+            )
+          )}
         </Board>
       </Main>
 
