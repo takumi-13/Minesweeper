@@ -76,25 +76,53 @@ const UnPushedBlock = styled(Block)`
   border-color: white;
 `
 
+const BomBlock = styled(Block)`
+  background-color: red;
+`
+
 const Logo = styled.span`
   height: 1em;
   margin-left: 0.5rem;
 `
 
+type Pos = { x: number; y: number }
+
 const Home: NextPage = () => {
   // prettier-ignore
-  //const [board, setBoard] = useState([
-  const [board] = useState([
-    [0, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 1, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 2, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 3, 9, 9, 9, 9, 9],
-    [9, 6, 9, 9, 4, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 5, 9, 9, 9],
-    [9, 7, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 8, 9, 9, 9, 9, 9],
+  const [board,setBoard] = useState([
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 9, 9],
   ])
+
+  const boms: Pos[] = [
+    { x: 1, y: 1 },
+    { x: 3, y: 3 },
+  ]
+
+  const onClick = (x: number, y: number) => {
+    //console.log({ x, y })
+    const calBom = () => {
+      let calNum = 0
+      boms.forEach(
+        (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
+      )
+      return calNum
+    }
+    const newNum = calBom()
+    let isBom = false
+    const newBoard: typeof board = JSON.parse(JSON.stringify(board))
+    boms.forEach((element) => (isBom = isBom || (element.x === x && element.y === y)))
+    //boms.forEach((element) => console.log(element.x, element.y))
+    isBom ? (newBoard[y][x] = -1) : (newBoard[y][x] = newNum)
+    setBoard(newBoard)
+  }
 
   return (
     <Container>
@@ -110,7 +138,9 @@ const Home: NextPage = () => {
           {board.map((row, y) =>
             row.map((num, x) =>
               num === 9 ? (
-                <UnPushedBlock key={`${x}-${y}`} />
+                <UnPushedBlock key={`${x}-${y}`} onClick={() => onClick(x, y)} />
+              ) : num === -1 ? (
+                <BomBlock key={`${x}-${y}`} />
               ) : (
                 <PushedBlock key={`${x}-${y}`}> {num !== 0 && num} </PushedBlock>
               )
