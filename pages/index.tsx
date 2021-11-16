@@ -109,7 +109,7 @@ const Home: NextPage = () => {
         <Board>
           {board.map((row, y) =>
             row.map((num, x) =>
-              num == 9 ? (
+              num === 9 ? (
                 <UnPushedBlock key={`${x}-${y}`} />
               ) : (
                 <PushedBlock key={`${x}-${y}`}> {num != 0 && num} </PushedBlock>
