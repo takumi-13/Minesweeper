@@ -112,7 +112,7 @@ const Home: NextPage = () => {
               num === 9 ? (
                 <UnPushedBlock key={`${x}-${y}`} />
               ) : (
-                <PushedBlock key={`${x}-${y}`}> {num != 0 && num} </PushedBlock>
+                <PushedBlock key={`${x}-${y}`}> {num !== 0 && num} </PushedBlock>
               )
             )
           )}
