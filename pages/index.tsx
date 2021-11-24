@@ -39,27 +39,27 @@ const Footer = styled.footer`
 const Board = styled.div`
   width: 455px;
   height: 455px;
+  margin: 10px 0;
   background-color: grey;
-  margin: 10px 0px;
   border: solid 2px black;
 `
 
 const BoardHeader = styled.div`
   width: 455px;
   height: 70px;
-  background-color: grey;
+  margin: 10px 0;
   overflow: hidden;
-  margin: 10px 0px;
+  background-color: grey;
   border: solid 2px black;
 `
 
 const BoardFrame = styled.div`
   width: 480px;
   height: 570px;
-  border-style: solid;
-  border-width: 10px;
   background-color: #d7d2d8;
   border-color: #d7d2d8;
+  border-style: solid;
+  border-width: 10px;
 `
 type PositionProps = {
   number: number
@@ -69,11 +69,11 @@ const Block = styled.div<PositionProps>`
   float: left;
   width: 50px;
   height: 50px;
-  border: 1px solid;
   background-image: url(icons.png);
-  background-size: 650px 55px;
   background-repeat: no-repeat;
   background-position: ${(props) => 45 - props.number * 45 + 'px'} -4px;
+  background-size: 650px 55px;
+  border: 1px solid;
 `
 Block.defaultProps = {
   number: 0,
@@ -85,8 +85,8 @@ const PushedBlock = styled(Block)<PositionProps>`
 `
 
 const UnPushedBlock = styled(Block)<PositionProps>`
+  background-image: none;
   border-color: white;
-  background-image: None;
 `
 
 const BomBlock = styled(Block)<PositionProps>`
@@ -103,31 +103,30 @@ const Logo = styled.span`
 `
 const BomNum = styled.div`
   float: left;
-  text-align: center;
-  font: mono-space;
-  color: red;
-  font-size: 50px;
-  background-color: black;
   margin-top: 5px;
+  margin-right: 25px;
   margin-bottom: 5px;
   margin-left: 50px;
-  margin-right: 25px;
+
+  /* font: mono-space; */
+  font-size: 50px;
+  color: red;
+  text-align: center;
+  background-color: black;
 `
 const FaceIcon = styled.div`
   float: left;
   width: 40px;
   height: 50px;
-
+  margin-top: 10px;
+  margin-right: 50px;
+  margin-bottom: 0;
+  margin-left: 50px;
+  background-color: #6c6e6e;
   background-image: url(icons.png);
-  background-size: 600px 55px;
   background-repeat: no-repeat;
   background-position: ${({ theme }) => theme.main} -4px;
-
-  margin-top: 10px;
-  margin-bottom: 0px;
-  margin-left: 50px;
-  margin-right: 50px;
-  background-color: #6c6e6e;
+  background-size: 600px 55px;
 `
 FaceIcon.defaultProps = {
   theme: {
@@ -137,14 +136,15 @@ FaceIcon.defaultProps = {
 
 const TimerNum = styled.div`
   float: right;
-  text-align: center;
-  font: mono-space;
-  color: red;
-  font-size: 50px;
-  background-color: black;
   margin-top: 5px;
-  margin-bottom: 5px;
   margin-right: 50px;
+  margin-bottom: 5px;
+
+  /* font: mono-space; */
+  font-size: 50px;
+  color: red;
+  text-align: center;
+  background-color: black;
 `
 
 type Pos = { x: number; y: number }
