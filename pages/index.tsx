@@ -21,24 +21,6 @@ const Main = styled.main`
   justify-content: center;
   padding: 5rem 0;
 `
-
-const Title = styled.h1`
-  margin: 0;
-  font-size: 4rem;
-  line-height: 1.15;
-  text-align: center;
-
-  a {
-    color: #0070f3;
-    text-decoration: none;
-  }
-  a:hover,
-  a:focus,
-  a:active {
-    text-decoration: underline;
-  }
-`
-
 const Footer = styled.footer`
   display: flex;
   align-items: center;
@@ -185,8 +167,8 @@ const createBom = (bomNum: number): Pos[] => {
   return res
 }
 
-//const boms: Pos[] = createBom(10)
-const boms: Pos[] = [{ x: 0, y: 0 }]
+const boms: Pos[] = createBom(10)
+//const boms: Pos[] = [{ x: 0, y: 0 }]
 
 const Home: NextPage = () => {
   // prettier-ignore
