@@ -37,29 +37,33 @@ const Footer = styled.footer`
   }
 `
 const Board = styled.div`
-  width: 455px;
-  height: 455px;
+  position: relative;
+  top: 0;
+  left: 6px;
+  width: 470px;
+  height: 470px;
   margin: 10px 0;
   background-color: grey;
-  border: solid 2px black;
+  border: inset 10px;
 `
 
 const BoardHeader = styled.div`
-  width: 455px;
-  height: 70px;
+  position: relative;
+  top: 0;
+  left: 6px;
+  width: 470px;
+  height: 90px;
   margin: 10px 0;
   overflow: hidden;
   background-color: grey;
-  border: solid 2px black;
+  border: inset 10px;
 `
 
 const BoardFrame = styled.div`
-  width: 480px;
-  height: 570px;
+  width: 490px;
+  height: 600px;
   background-color: #d7d2d8;
-  border-color: #d7d2d8;
-  border-style: solid;
-  border-width: 10px;
+  border: outset 6px;
 `
 type PositionProps = {
   number: number
@@ -85,8 +89,13 @@ const PushedBlock = styled(Block)<PositionProps>`
 `
 
 const UnPushedBlock = styled(Block)<PositionProps>`
+  cursor: pointer;
   background-image: none;
   border-color: white;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
 `
 
 const BomBlock = styled(Block)<PositionProps>`
@@ -94,7 +103,20 @@ const BomBlock = styled(Block)<PositionProps>`
   background-position: -460px -4px;
 `
 const FlagBlock = styled(Block)<PositionProps>`
+  cursor: pointer;
   background-position: -415px -4px;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
+`
+const HatenaBlock = styled(Block)<PositionProps>`
+  cursor: pointer;
+  background-position: -370px -4px;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
 `
 
 const Logo = styled.span`
@@ -103,30 +125,30 @@ const Logo = styled.span`
 `
 const BomNum = styled.div`
   float: left;
-  margin-top: 5px;
-  margin-right: 25px;
-  margin-bottom: 5px;
-  margin-left: 50px;
-
-  /* font: mono-space; */
-  font-size: 50px;
+  width: 100px;
+  margin-top: 3px;
+  margin-right: 60px;
+  margin-left: 30px;
+  font-family: monospace;
+  font-size: 46px;
   color: red;
   text-align: center;
   background-color: black;
 `
 const FaceIcon = styled.div`
   float: left;
-  width: 40px;
+  width: 50px;
   height: 50px;
   margin-top: 10px;
-  margin-right: 50px;
+  margin-right: 20px;
   margin-bottom: 0;
-  margin-left: 50px;
+  margin-left: 15px;
   background-color: #6c6e6e;
   background-image: url(icons.png);
   background-repeat: no-repeat;
   background-position: ${({ theme }) => theme.main} -4px;
-  background-size: 600px 55px;
+  background-size: 605px 50px;
+  border: outset 4px;
 `
 FaceIcon.defaultProps = {
   theme: {
@@ -135,19 +157,19 @@ FaceIcon.defaultProps = {
 }
 
 const TimerNum = styled.div`
-  float: right;
-  margin-top: 5px;
-  margin-right: 50px;
-  margin-bottom: 5px;
-
-  /* font: mono-space; */
-  font-size: 50px;
+  float: left;
+  width: 100px;
+  margin-top: 3px;
+  margin-left: 50px;
+  font-family: monospace;
+  font-size: 46px;
   color: red;
   text-align: center;
   background-color: black;
 `
 
 type Pos = { x: number; y: number }
+type Values = { x: number; y: number; value: number }
 
 const createBom = (bomNum: number): Pos[] => {
   const getRandomInt = (min: number, max: number) => {
@@ -172,8 +194,10 @@ const boms: Pos[] = createBom(10)
 
 const Home: NextPage = () => {
   // prettier-ignore
+  let newPositions: Values[] = []
+  let reachedPositions: Pos[] = []
 
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
   useEffect(() => {
     const id = setInterval(() => {
       setCount((t) => t + 1)
@@ -183,6 +207,8 @@ const Home: NextPage = () => {
 
   //0:Normal, 1:Clear, 99:Gameover
   const [gameState, setGameState] = useState(0)
+
+  // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
   const [board, setBoard] = useState([
     [9, 9, 9, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -197,63 +223,178 @@ const Home: NextPage = () => {
   const [flgPosition, setFlgPosition] = useState<Pos[]>([])
 
   const onContextMenu = (posX: number, posY: number) => {
-    const array_equall = (a: Pos[], b: Pos[]) => {
-      if (!Array.isArray(a)) return false
-      if (!Array.isArray(b)) return false
-      if (a.length != b.length) return false
-      for (let i = 0, n = a.length; i < n; ++i) {
-        if (a[i] !== b[i]) return false
-      }
-      return true
-    }
-    const checkGameClear = () => {
-      console.log(flgPosition)
-      array_equall(flgPosition, [
-        { x: 1, y: 1 },
-        { x: 0, y: 0 },
-      ])
-        ? setGameState(99)
-        : console.log('Not clear')
+    const removeFlgPosition = (flg: Pos) => {
+      const res = [...flgPosition]
+      let count = 0
+      let index = 0
+      let isFind = false
+      res.forEach((element) => {
+        if (posEquall(element, flg)) {
+          index = count
+          isFind = true
+        }
+        count += 1
+      })
+      isFind && res.splice(index, 1)
+      return res
     }
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     const newFlgPosition: Pos = { x: posX, y: posY }
     const isFlg = board[posY][posX] === 99
+    const isHatena = board[posY][posX] === 100
+
+    let newFlgPositions: Pos[] = []
     if (isFlg) {
       newBoard[posY][posX] = 9
-      const res = [...flgPosition]
-      const index = res.indexOf(newFlgPosition)
-      res.splice(index, 1)
-      setFlgPosition(res)
-      console.log(flgPosition)
-    } else {
+      newFlgPositions = removeFlgPosition(newFlgPosition)
+    } else if (isHatena) {
       newBoard[posY][posX] = 99
-      setFlgPosition([...flgPosition, newFlgPosition])
+      newFlgPositions = [...flgPosition, newFlgPosition]
+    } else {
+      newBoard[posY][posX] = 100
+      newFlgPositions = removeFlgPosition(newFlgPosition)
     }
+    posArrayEquall(newFlgPositions, boms) ? setGameState(1) : setGameState(0)
+    setFlgPosition(newFlgPositions)
     setBoard(newBoard)
-    checkGameClear()
   }
 
-  const onClick = (x: number, y: number) => {
-    //console.log({ x, y })
-    const calBom = () => {
-      let calNum = 0
-      boms.forEach(
-        (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
-      )
-      return calNum
-    }
-    const checkGameOver = () => {
-      isBom && setGameState(99)
-    }
+  const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
+    let res = true
+    if (ps1.length === ps2.length) {
+      for (const p1 of ps1) {
+        let b1 = false
+        for (const p2 of ps2) {
+          b1 = b1 || posEquall(p1, p2)
+        }
+        res = b1 && res
+      }
+    } else res = false
 
-    const newNum = calBom()
+    return res
+  }
+
+  const posEquall = (p1: Pos, p2: Pos): boolean => {
+    return p1.x === p2.x && p1.y === p2.y
+  }
+
+  const checkReached = (vs: Values): boolean => {
+    let res = false
+    for (const item of reachedPositions) {
+      const b1 = posEquall(item, vs)
+      if (b1) {
+        res = true
+        break
+      }
+    }
+    !res && reachedPositions.push({ x: vs.x, y: vs.y })
+    return res
+  }
+
+  const updateNewPosition = (vs: Values, newboard: number[][]) => {
+    newPositions.push(vs)
+
+    //訪れたことのないブロックの場合再帰処理
+    const isReached: boolean = checkReached(vs)
+    if (!isReached) {
+      if (vs.value === 0) {
+        vs.y < 8 &&
+          newboard[vs.y + 1][vs.x] === 9 &&
+          updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, newboard)
+        0 < vs.y &&
+          newboard[vs.y - 1][vs.x] === 9 &&
+          updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, newboard)
+        vs.x < 8 &&
+          newboard[vs.y][vs.x + 1] === 9 &&
+          updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, newboard)
+        0 < vs.x &&
+          newboard[vs.y][vs.x - 1] === 9 &&
+          updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
+
+        8 > vs.x &&
+          8 > vs.y &&
+          newboard[vs.y + 1][vs.x + 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1) },
+            newboard
+          )
+        0 < vs.x &&
+          8 > vs.y &&
+          newboard[vs.y + 1][vs.x - 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1) },
+            newboard
+          )
+        8 > vs.x &&
+          0 < vs.y &&
+          newboard[vs.y - 1][vs.x + 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1) },
+            newboard
+          )
+        0 < vs.x &&
+          0 < vs.y &&
+          newboard[vs.y - 1][vs.x - 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1) },
+            newboard
+          )
+      }
+    }
+  }
+
+  const calBom = (x: number, y: number) => {
+    let calNum = 0
+    boms.forEach(
+      (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
+    )
+    return calNum
+  }
+
+  const onClick = (posX: number, posY: number) => {
+    //元のボードに変更を加える関数
+    const applyBoard = (board: number[][], res: Values[]) => {
+      res.forEach((element) => {
+        board[element.y][element.x] = element.value
+      })
+      setBoard(board)
+    }
+    //現在地にボムがあるか判定
     let isBom = false
+    boms.forEach((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
+
+    //現在地にボムがあった場合，gameStateを99に,ボードの値を-1に設定
+    //ボムがなかった場合，周囲のボム数を数える
+    //周囲のボム数が1-8の場合，現在地を1-8に設定し終了
+    //周囲のボム数が0の場合，さらに周囲のブロックについても判定
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
-    boms.forEach((element) => (isBom = isBom || (element.x === x && element.y === y)))
-    //boms.forEach((element) => console.log(element.x, element.y))
-    isBom ? (newBoard[y][x] = -1) : (newBoard[y][x] = newNum)
-    setBoard(newBoard)
-    checkGameOver()
+    if (isBom) {
+      newPositions = [{ x: posX, y: posY, value: -1 }]
+      setGameState(99)
+    } else {
+      const newNum = calBom(posX, posY)
+      if (0 < newNum && newNum < 9) {
+        newPositions = [{ x: posX, y: posY, value: newNum }]
+      } else {
+        newPositions = []
+        reachedPositions = []
+        updateNewPosition({ x: posX, y: posY, value: newNum }, board)
+        console.log('Block are Pushed:')
+      }
+    }
+    //元のボードに新しいボードの値を適用
+    applyBoard(newBoard, newPositions)
+  }
+
+  const countCorrect = (): number => {
+    let count = 0
+    flgPosition.forEach
+    flgPosition.forEach((e1) => {
+      boms.forEach((e2) => {
+        posEquall(e1, e2) && count++
+      })
+    })
+    return count
   }
 
   return (
@@ -267,17 +408,17 @@ const Home: NextPage = () => {
       <Main>
         <BoardFrame>
           <BoardHeader>
-            <BomNum>{('000' + boms.length).slice(-3)}</BomNum>
+            <BomNum>{('000' + (boms.length - countCorrect())).slice(-3)}</BomNum>
             {gameState === 0 ? (
               <FaceIcon theme={{ main: '-475px' }}>
                 <a></a>
               </FaceIcon>
             ) : gameState === 1 ? (
-              <FaceIcon theme={{ main: '-515px' }}>
+              <FaceIcon theme={{ main: '-520px' }}>
                 <a></a>
               </FaceIcon>
             ) : (
-              <FaceIcon theme={{ main: '-560px' }}>
+              <FaceIcon theme={{ main: '-563px' }}>
                 <a></a>
               </FaceIcon>
             )}
@@ -298,6 +439,13 @@ const Home: NextPage = () => {
                   <BomBlock key={`${x}-${y}`} number={0} />
                 ) : num === 99 ? (
                   <FlagBlock
+                    key={`${x}-${y}`}
+                    onClick={() => onClick(x, y)}
+                    onContextMenu={() => onContextMenu(x, y)}
+                    number={0}
+                  />
+                ) : num === 100 ? (
+                  <HatenaBlock
                     key={`${x}-${y}`}
                     onClick={() => onClick(x, y)}
                     onContextMenu={() => onContextMenu(x, y)}
