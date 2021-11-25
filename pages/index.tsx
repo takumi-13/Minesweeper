@@ -166,6 +166,7 @@ const TimerNum = styled.div`
 `
 
 type Pos = { x: number; y: number }
+type Values = { x: number; y: number; value: number }
 
 const createBom = (bomNum: number): Pos[] => {
   const getRandomInt = (min: number, max: number) => {
@@ -184,7 +185,8 @@ const createBom = (bomNum: number): Pos[] => {
   console.log(res)
   return res
 }
-
+let newPositions: Values[] = []
+let reachedPositions: Pos[] = []
 const boms: Pos[] = createBom(10)
 //const boms: Pos[] = [{ x: 0, y: 0 }]
 
@@ -260,26 +262,81 @@ const Home: NextPage = () => {
     checkGameClear()
   }
 
-  const onClick = (x: number, y: number) => {
-    //console.log({ x, y })
-    const calBom = () => {
-      let calNum = 0
-      boms.forEach(
-        (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
-      )
-      return calNum
-    }
-    const checkGameOver = () => {
-      isBom && setGameState(99)
-    }
+  const equall_dictionry = (d1: Pos, d2: Pos) => {
+    return d1.x === d2.x && d1.y === d2.y
+  }
 
-    const newNum = calBom()
+  const checkReached = (vs: Values) => {
+    let res = false
+    reachedPositions.forEach((element) => {
+      res = res || equall_dictionry({ x: vs.x, y: vs.y }, element)
+    })
+    return res
+  }
+
+  const updateNewPosition = (vs: Values, board: number[][]) => {
+    newPositions.push(vs)
+    const isReached: boolean = checkReached(vs)
+    reachedPositions.push({ x: vs.x, y: vs.y })
+    if (!isReached) {
+      if (vs.value === 0) {
+        0 < vs.y &&
+          board[vs.x][vs.y - 1] === 9 &&
+          updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, board)
+        vs.y < 8 &&
+          board[vs.x][vs.y + 1] === 9 &&
+          updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, board)
+        vs.x < 8 &&
+          board[vs.x + 1][vs.y] === 9 &&
+          updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, board)
+        0 < vs.x &&
+          board[vs.x - 1][vs.y] === 9 &&
+          updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, board)
+      }
+    }
+  }
+
+  const applyBoard = (board: number[][], res: Values[]) => {
+    res.forEach((element) => {
+      board[element.y][element.x] = element.value
+    })
+    setBoard(board)
+  }
+
+  const calBom = (x: number, y: number) => {
+    let calNum = 0
+    boms.forEach(
+      (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
+    )
+    return calNum
+  }
+
+  const onClick = (posX: number, posY: number) => {
+    //現在地にボムがあるか判定
     let isBom = false
+    boms.forEach((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
+
+    //現在地にボムがあった場合，gameStateを99に,ボードの値を-1に設定
+    //ボムがなかった場合，周囲のボム数を数える
+    //周囲のボム数が1-8の場合，現在地を1-8に設定し終了
+    //周囲のボム数が0の場合，さらに周囲のブロックについても判定
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
-    boms.forEach((element) => (isBom = isBom || (element.x === x && element.y === y)))
-    isBom ? (newBoard[y][x] = -1) : (newBoard[y][x] = newNum)
-    setBoard(newBoard)
-    checkGameOver()
+    if (isBom) {
+      newPositions = [{ x: posX, y: posY, value: -1 }]
+      setGameState(99)
+    } else {
+      const newNum = calBom(posX, posY)
+      if (0 < newNum && newNum < 9) {
+        newPositions = [{ x: posX, y: posY, value: newNum }]
+      } else {
+        newPositions = []
+        reachedPositions = []
+        updateNewPosition({ x: posX, y: posY, value: newNum }, newBoard)
+        console.log(newPositions)
+      }
+    }
+    //新しいボードの値を元のボードに適用
+    applyBoard(newBoard, newPositions)
   }
 
   return (
