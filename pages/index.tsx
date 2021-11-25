@@ -310,6 +310,35 @@ const Home: NextPage = () => {
         0 < vs.x &&
           newboard[vs.y][vs.x - 1] === 9 &&
           updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
+
+        8 > vs.x &&
+          8 > vs.y &&
+          newboard[vs.y + 1][vs.x + 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1) },
+            newboard
+          )
+        0 < vs.x &&
+          8 > vs.y &&
+          newboard[vs.y + 1][vs.x - 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1) },
+            newboard
+          )
+        8 > vs.x &&
+          0 < vs.y &&
+          newboard[vs.y - 1][vs.x + 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1) },
+            newboard
+          )
+        0 < vs.x &&
+          0 < vs.y &&
+          newboard[vs.y - 1][vs.x - 1] === 9 &&
+          updateNewPosition(
+            { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1) },
+            newboard
+          )
       }
     }
   }
