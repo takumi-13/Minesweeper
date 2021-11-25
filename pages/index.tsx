@@ -262,14 +262,14 @@ const Home: NextPage = () => {
     checkGameClear()
   }
 
-  const equall_dictionry = (d1: Pos, d2: Pos) => {
+  const equall_position = (d1: Pos, d2: Pos) => {
     return d1.x === d2.x && d1.y === d2.y
   }
 
   const checkReached = (vs: Values) => {
     let res = false
     reachedPositions.forEach((element) => {
-      res = res || equall_dictionry({ x: vs.x, y: vs.y }, element)
+      res = res || equall_position({ x: vs.x, y: vs.y }, element)
     })
     return res
   }
@@ -280,12 +280,12 @@ const Home: NextPage = () => {
     reachedPositions.push({ x: vs.x, y: vs.y })
     if (!isReached) {
       if (vs.value === 0) {
-        0 < vs.y &&
-          board[vs.x][vs.y - 1] === 9 &&
-          updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, board)
         vs.y < 8 &&
           board[vs.x][vs.y + 1] === 9 &&
           updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, board)
+        0 < vs.y &&
+          board[vs.x][vs.y - 1] === 9 &&
+          updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, board)
         vs.x < 8 &&
           board[vs.x + 1][vs.y] === 9 &&
           updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, board)
