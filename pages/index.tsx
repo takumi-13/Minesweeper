@@ -87,6 +87,11 @@ const PushedBlock = styled(Block)<PositionProps>`
 const UnPushedBlock = styled(Block)<PositionProps>`
   background-image: none;
   border-color: white;
+  cursor: pointer;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
 `
 
 const BomBlock = styled(Block)<PositionProps>`
@@ -95,6 +100,19 @@ const BomBlock = styled(Block)<PositionProps>`
 `
 const FlagBlock = styled(Block)<PositionProps>`
   background-position: -415px -4px;
+  cursor: pointer;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
+`
+const HatenaBlock = styled(Block)<PositionProps>`
+  background-position: -370px -4px;
+  cursor: pointer;
+  :hover {
+    border-bottom-color: transparent;
+    transform: translateY(0.1875em);
+  }
 `
 
 const Logo = styled.span`
@@ -183,6 +201,8 @@ const Home: NextPage = () => {
 
   //0:Normal, 1:Clear, 99:Gameover
   const [gameState, setGameState] = useState(0)
+
+  // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
   const [board, setBoard] = useState([
     [9, 9, 9, 9, 9, 9, 9, 9, 9],
     [9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -215,16 +235,23 @@ const Home: NextPage = () => {
         ? setGameState(99)
         : console.log('Not clear')
     }
+    const removeFlgPosition = (flg: Pos) => {
+      const res = [...flgPosition]
+      const index = res.indexOf(flg)
+      res.splice(index, 1)
+      setFlgPosition(res)
+    }
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     const newFlgPosition: Pos = { x: posX, y: posY }
     const isFlg = board[posY][posX] === 99
+    const isHatena = board[posY][posX] === 100
+
     if (isFlg) {
+      newBoard[posY][posX] = 100
+      removeFlgPosition(newFlgPosition)
+    } else if (isHatena) {
       newBoard[posY][posX] = 9
-      const res = [...flgPosition]
-      const index = res.indexOf(newFlgPosition)
-      res.splice(index, 1)
-      setFlgPosition(res)
-      console.log(flgPosition)
+      removeFlgPosition(newFlgPosition)
     } else {
       newBoard[posY][posX] = 99
       setFlgPosition([...flgPosition, newFlgPosition])
@@ -250,7 +277,6 @@ const Home: NextPage = () => {
     let isBom = false
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     boms.forEach((element) => (isBom = isBom || (element.x === x && element.y === y)))
-    //boms.forEach((element) => console.log(element.x, element.y))
     isBom ? (newBoard[y][x] = -1) : (newBoard[y][x] = newNum)
     setBoard(newBoard)
     checkGameOver()
@@ -298,6 +324,13 @@ const Home: NextPage = () => {
                   <BomBlock key={`${x}-${y}`} number={0} />
                 ) : num === 99 ? (
                   <FlagBlock
+                    key={`${x}-${y}`}
+                    onClick={() => onClick(x, y)}
+                    onContextMenu={() => onContextMenu(x, y)}
+                    number={0}
+                  />
+                ) : num === 100 ? (
+                  <HatenaBlock
                     key={`${x}-${y}`}
                     onClick={() => onClick(x, y)}
                     onContextMenu={() => onContextMenu(x, y)}
