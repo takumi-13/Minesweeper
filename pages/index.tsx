@@ -225,6 +225,7 @@ const boms: Pos[] = createBom(10)
 //const boms: Pos[] = [{ x: 0, y: 0 }]
 
 const Home: NextPage = () => {
+  if (typeof document !== 'undefined') document.oncontextmenu = () => false
   // prettier-ignore
   let newPositions: Values[] = []
   let reachedPositions: Pos[] = []
@@ -421,7 +422,7 @@ const Home: NextPage = () => {
       <Main>
         <BoardFrame>
           <BoardHeader>
-            <BomNum>{('000' + (boms.length - countCorrect())).slice(-3)}</BomNum>
+            <BomNum>{('000' + (boms.length - flgPosition.length)).slice(-3)}</BomNum>
             {gameState === 0 ? (
               <FaceIcon theme={{ main: '-475px' }}>
                 <a></a>
@@ -445,7 +446,7 @@ const Home: NextPage = () => {
                   <UnPushedBlock
                     key={`${x}-${y}`}
                     onClick={() => onClick(x, y)}
-                    onContextMenu={() => onContextMenu(x, y)}
+                    onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
                     number={0}
                   />
                 ) : num === -1 ? (
@@ -453,15 +454,13 @@ const Home: NextPage = () => {
                 ) : num === 99 ? (
                   <FlagBlock
                     key={`${x}-${y}`}
-                    onClick={() => onClick(x, y)}
                     onContextMenu={() => onContextMenu(x, y)}
                     number={0}
                   />
                 ) : num === 100 ? (
                   <HatenaBlock
                     key={`${x}-${y}`}
-                    onClick={() => onClick(x, y)}
-                    onContextMenu={() => onContextMenu(x, y)}
+                    onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
                     number={0}
                   />
                 ) : (
