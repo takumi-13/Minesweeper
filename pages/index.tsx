@@ -135,7 +135,7 @@ const BomNum = styled.div`
   text-align: center;
   background-color: black;
 `
-const FaceIcon = styled.div`
+const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   float: left;
   width: 50px;
   height: 50px;
@@ -400,6 +400,10 @@ const Home: NextPage = () => {
     applyBoard(newBoard, newPositions)
   }
 
+  const onClickFaceIcon = () => {
+    //初期化
+  }
+
   const countCorrect = (): number => {
     let count = 0
     flgPosition.forEach
@@ -424,7 +428,7 @@ const Home: NextPage = () => {
           <BoardHeader>
             <BomNum>{('000' + (boms.length - flgPosition.length)).slice(-3)}</BomNum>
             {gameState === 0 ? (
-              <FaceIcon theme={{ main: '-475px' }}>
+              <FaceIcon theme={{ main: '-475px' }} onClick={() => onClickFaceIcon()}>
                 <a></a>
               </FaceIcon>
             ) : gameState === 1 ? (
