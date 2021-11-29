@@ -135,7 +135,7 @@ const BomNum = styled.div`
   text-align: center;
   background-color: black;
 `
-const FaceIcon = styled(UnPushedBlock)<PositionProps>`
+const FaceIcon = styled.div`
   float: left;
   width: 50px;
   height: 50px;
@@ -221,7 +221,7 @@ const createBom = (bomNum: number): Pos[] => {
   return res
 }
 
-const boms: Pos[] = createBom(10)
+let boms: Pos[] = createBom(10)
 //const boms: Pos[] = [{ x: 0, y: 0 }]
 
 const Home: NextPage = () => {
@@ -383,7 +383,11 @@ const Home: NextPage = () => {
     //周囲のボム数が0の場合，さらに周囲のブロックについても判定
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
-      newPositions = [{ x: posX, y: posY, value: -1 }]
+      //newPositions = [{ x: posX, y: posY, value: -1 }]
+      newPositions = []
+      boms.forEach((el) => {
+        newPositions.push({ x: el.x, y: el.y, value: -1 })
+      })
       setGameState(99)
     } else {
       const newNum = calBom(posX, posY)
@@ -402,8 +406,23 @@ const Home: NextPage = () => {
 
   const onClickFaceIcon = () => {
     //初期化
+    setBoard([
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    ])
+    setGameState(0)
+    setFlgPosition([])
+    setCount(0)
+    boms = createBom(10)
   }
-
+  /*
   const countCorrect = (): number => {
     let count = 0
     flgPosition.forEach
@@ -414,7 +433,7 @@ const Home: NextPage = () => {
     })
     return count
   }
-
+*/
   return (
     <Container>
       <Head>
@@ -432,11 +451,11 @@ const Home: NextPage = () => {
                 <a></a>
               </FaceIcon>
             ) : gameState === 1 ? (
-              <FaceIcon theme={{ main: '-520px' }}>
+              <FaceIcon theme={{ main: '-520px' }} onClick={() => onClickFaceIcon()}>
                 <a></a>
               </FaceIcon>
             ) : (
-              <FaceIcon theme={{ main: '-563px' }}>
+              <FaceIcon theme={{ main: '-563px' }} onClick={() => onClickFaceIcon()}>
                 <a></a>
               </FaceIcon>
             )}
@@ -449,7 +468,7 @@ const Home: NextPage = () => {
                 num === 9 ? (
                   <UnPushedBlock
                     key={`${x}-${y}`}
-                    onClick={() => onClick(x, y)}
+                    onClick={() => gameState === 0 && onClick(x, y)}
                     onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
                     number={0}
                   />
