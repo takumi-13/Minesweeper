@@ -90,7 +90,6 @@ const PushedBlock = styled(Block)<PositionProps>`
 
 const UnPushedBlock = styled(Block)<PositionProps>`
   cursor: pointer;
-  background-image: none;
   border-color: white;
   :hover {
     border-bottom-color: transparent;
@@ -102,28 +101,18 @@ const BomBlock = styled(Block)<PositionProps>`
   background-color: red;
   background-position: -460px -4px;
 `
-const FlagBlock = styled(Block)<PositionProps>`
-  cursor: pointer;
+const FlagBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -415px -4px;
-  :hover {
-    border-bottom-color: transparent;
-    transform: translateY(0.1875em);
-  }
 `
-const HatenaBlock = styled(Block)<PositionProps>`
-  cursor: pointer;
+const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -370px -4px;
-  :hover {
-    border-bottom-color: transparent;
-    transform: translateY(0.1875em);
-  }
 `
 
 const Logo = styled.span`
   height: 1em;
   margin-left: 0.5rem;
 `
-const BomNum = styled.div`
+const FlagNum = styled.div`
   float: left;
   width: 100px;
   margin-top: 3px;
@@ -135,27 +124,16 @@ const BomNum = styled.div`
   text-align: center;
   background-color: black;
 `
-const FaceIcon = styled.div`
+const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   float: left;
-  width: 50px;
-  height: 50px;
   margin-top: 10px;
   margin-right: 20px;
   margin-bottom: 0;
   margin-left: 15px;
-  background-color: #6c6e6e;
-  background-image: url(icons.png);
-  background-repeat: no-repeat;
-  background-position: ${({ theme }) => theme.main} -4px;
+  background-position: ${(props) => props.number} -4px;
   background-size: 605px 50px;
   border: outset 4px;
 `
-FaceIcon.defaultProps = {
-  theme: {
-    main: '-475px',
-  },
-}
-
 const TimerNum = styled.div`
   float: left;
   width: 100px;
@@ -222,7 +200,8 @@ const createBom = (bomNum: number): Pos[] => {
 }
 
 let boms: Pos[] = createBom(10)
-//const boms: Pos[] = [{ x: 0, y: 0 }]
+let pushedBlockNum = 0
+//let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
@@ -230,30 +209,49 @@ const Home: NextPage = () => {
   let newPositions: Values[] = []
   let reachedPositions: Pos[] = []
 
-  const [count, setCount] = useState(0)
+  //ToDo: useEffectのタイミングを変更
   useEffect(() => {
     const id = setInterval(() => {
-      setCount((t) => t + 1)
+      gameState === 0 && setCount((t) => t + 1)
     }, 1000)
     return () => clearInterval(id)
   }, [])
 
-  //0:Normal, 1:Clear, 99:Gameover
-  const [gameState, setGameState] = useState(0)
+  const firstState = {
+    count: 0,
+    gameState: -1,
+    flgPosition: [],
+    board: [
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+      [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    ],
+  }
+  const [count, setCount] = useState(firstState.count)
+
+  //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
+  const [gameState, setGameState] = useState(firstState.gameState)
 
   // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
-  const [board, setBoard] = useState([
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    [9, 9, 9, 9, 9, 9, 9, 9, 9],
-  ])
-  const [flgPosition, setFlgPosition] = useState<Pos[]>([])
+  const [board, setBoard] = useState(firstState.board)
+
+  const [flgPosition, setFlgPosition] = useState<Pos[]>(firstState.flgPosition)
+
+  //Stateの初期化
+  const refreshState = () => {
+    setCount(firstState.count)
+    setGameState(firstState.gameState)
+    setBoard(firstState.board)
+    setFlgPosition(firstState.flgPosition)
+    pushedBlockNum = 0
+    boms = createBom(10)
+  }
 
   const onContextMenu = (posX: number, posY: number) => {
     const removeFlgPosition = (flg: Pos) => {
@@ -311,6 +309,7 @@ const Home: NextPage = () => {
     //訪れたことのないブロックの場合再帰処理
     const isReached: boolean = checkReached(vs)
     if (!isReached) {
+      pushedBlockNum++
       if (vs.value === 0) {
         vs.y < 8 &&
           newboard[vs.y + 1][vs.x] === 9 &&
@@ -324,7 +323,6 @@ const Home: NextPage = () => {
         0 < vs.x &&
           newboard[vs.y][vs.x - 1] === 9 &&
           updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
-
         8 > vs.x &&
           8 > vs.y &&
           newboard[vs.y + 1][vs.x + 1] === 9 &&
@@ -366,6 +364,7 @@ const Home: NextPage = () => {
   }
 
   const onClick = (posX: number, posY: number) => {
+    gameState === -1 && setGameState(0)
     //元のボードに変更を加える関数
     const applyBoard = (board: number[][], res: Values[]) => {
       res.forEach((element) => {
@@ -393,35 +392,24 @@ const Home: NextPage = () => {
       const newNum = calBom(posX, posY)
       if (0 < newNum && newNum < 9) {
         newPositions = [{ x: posX, y: posY, value: newNum }]
+        pushedBlockNum++
       } else {
         newPositions = []
         reachedPositions = []
         updateNewPosition({ x: posX, y: posY, value: newNum }, board)
-        console.log('Block are Pushed:')
+      }
+      console.log(pushedBlockNum)
+      if (pushedBlockNum === board.length ** 2 - boms.length) {
+        setGameState(1)
+        boms.forEach((el) => {
+          newPositions.push({ x: el.x, y: el.y, value: 99 })
+        })
       }
     }
     //元のボードに新しいボードの値を適用
     applyBoard(newBoard, newPositions)
   }
 
-  const onClickFaceIcon = () => {
-    //初期化
-    setBoard([
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    ])
-    setGameState(0)
-    setFlgPosition([])
-    setCount(0)
-    boms = createBom(10)
-  }
   /*
   const countCorrect = (): number => {
     let count = 0
@@ -445,17 +433,17 @@ const Home: NextPage = () => {
       <Main>
         <BoardFrame>
           <BoardHeader>
-            <BomNum>{('000' + (boms.length - flgPosition.length)).slice(-3)}</BomNum>
-            {gameState === 0 ? (
-              <FaceIcon theme={{ main: '-475px' }} onClick={() => onClickFaceIcon()}>
+            <FlagNum>{('000' + (boms.length - flgPosition.length)).slice(-3)}</FlagNum>
+            {gameState === 0 || gameState === -1 ? (
+              <FaceIcon number={11.6} onClick={() => refreshState()}>
                 <a></a>
               </FaceIcon>
             ) : gameState === 1 ? (
-              <FaceIcon theme={{ main: '-520px' }} onClick={() => onClickFaceIcon()}>
+              <FaceIcon number={12.55} onClick={() => refreshState()}>
                 <a></a>
               </FaceIcon>
             ) : (
-              <FaceIcon theme={{ main: '-563px' }} onClick={() => onClickFaceIcon()}>
+              <FaceIcon number={13.5} onClick={() => refreshState()}>
                 <a></a>
               </FaceIcon>
             )}
@@ -468,7 +456,7 @@ const Home: NextPage = () => {
                 num === 9 ? (
                   <UnPushedBlock
                     key={`${x}-${y}`}
-                    onClick={() => gameState === 0 && onClick(x, y)}
+                    onClick={() => (gameState === 0 || gameState === -1) && onClick(x, y)}
                     onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
                     number={0}
                   />
