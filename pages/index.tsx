@@ -171,6 +171,33 @@ const TimerNum = styled.div`
 type Pos = { x: number; y: number }
 type Values = { x: number; y: number; value: number }
 
+const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
+  let res = true
+  if (ps1.length === ps2.length) {
+    for (const p1 of ps1) {
+      let b1 = false
+      for (const p2 of ps2) {
+        b1 = b1 || posEquall(p1, p2)
+      }
+      res = b1 && res
+    }
+  } else res = false
+
+  return res
+}
+
+const posEquall = (p1: Pos, p2: Pos): boolean => {
+  return p1.x === p2.x && p1.y === p2.y
+}
+
+const isPosInclude = (p1: Pos, ps: Pos[]): boolean => {
+  let res = false
+  ps.forEach((el) => {
+    res = res || posEquall(el, p1)
+  })
+  return res
+}
+
 const createBom = (bomNum: number): Pos[] => {
   const getRandomInt = (min: number, max: number) => {
     min = Math.ceil(min)
@@ -180,8 +207,13 @@ const createBom = (bomNum: number): Pos[] => {
   const res: Pos[] = []
   for (let i = 0; i < bomNum; i++) {
     let pos: Pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-    while (res.includes(pos)) {
-      pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
+    let isIncludePos = isPosInclude(pos, res)
+    while (isIncludePos) {
+      if (isIncludePos) {
+        console.log(i, pos)
+        pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
+      }
+      isIncludePos = isPosInclude(pos, res)
     }
     res.push(pos)
   }
@@ -259,25 +291,6 @@ const Home: NextPage = () => {
     setBoard(newBoard)
   }
 
-  const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
-    let res = true
-    if (ps1.length === ps2.length) {
-      for (const p1 of ps1) {
-        let b1 = false
-        for (const p2 of ps2) {
-          b1 = b1 || posEquall(p1, p2)
-        }
-        res = b1 && res
-      }
-    } else res = false
-
-    return res
-  }
-
-  const posEquall = (p1: Pos, p2: Pos): boolean => {
-    return p1.x === p2.x && p1.y === p2.y
-  }
-
   const checkReached = (vs: Values): boolean => {
     let res = false
     for (const item of reachedPositions) {
@@ -342,7 +355,7 @@ const Home: NextPage = () => {
       }
     }
   }
-
+  //TODO: 算出方法の修正
   const calBom = (x: number, y: number) => {
     let calNum = 0
     boms.forEach(
