@@ -199,10 +199,14 @@ const createBom = (bomNum: number): Pos[] => {
   return res
 }
 
-let boms: Pos[] = createBom(10)
+//let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
 
-//let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
+let boms: Pos[] = [
+  { x: 0, y: 0 },
+  { x: 1, y: 1 },
+  { x: 2, y: 2 },
+]
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
@@ -262,7 +266,7 @@ const Home: NextPage = () => {
       return
     }
     clearInterval(intervalRef.current)
-    intervalRef.current = 1
+    intervalRef.current = null
   }, [])
 
   const setGameClear = () => {
@@ -275,6 +279,8 @@ const Home: NextPage = () => {
   }
 
   const onContextMenu = (posX: number, posY: number) => {
+    gameState === -1 && setGameState(0)
+    gameState === -1 && countStart()
     const removeFlgPosition = (flg: Pos) => {
       const res = [...flgPosition]
       let count = 0
@@ -432,18 +438,6 @@ const Home: NextPage = () => {
     applyBoard(newBoard, newPositions)
   }
 
-  /*
-  const countCorrect = (): number => {
-    let count = 0
-    flgPosition.forEach
-    flgPosition.forEach((e1) => {
-      boms.forEach((e2) => {
-        posEquall(e1, e2) && count++
-      })
-    })
-    return count
-  }
-*/
   return (
     <Container>
       <Head>
