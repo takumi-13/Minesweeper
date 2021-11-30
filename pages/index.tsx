@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -201,6 +201,7 @@ const createBom = (bomNum: number): Pos[] => {
 
 let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
+
 //let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
 
 const Home: NextPage = () => {
@@ -208,14 +209,6 @@ const Home: NextPage = () => {
   // prettier-ignore
   let newPositions: Values[] = []
   let reachedPositions: Pos[] = []
-
-  //ToDo: useEffectのタイミングを変更
-  useEffect(() => {
-    const id = setInterval(() => {
-      gameState === 0 && setCount((t) => t + 1)
-    }, 1000)
-    return () => clearInterval(id)
-  }, [])
 
   const firstState = {
     count: 0,
@@ -233,7 +226,16 @@ const Home: NextPage = () => {
       [9, 9, 9, 9, 9, 9, 9, 9, 9],
     ],
   }
-  const [count, setCount] = useState(firstState.count)
+  //Stateの初期化
+  const refreshState = () => {
+    setGameState(firstState.gameState)
+    setBoard(firstState.board)
+    setFlgPosition(firstState.flgPosition)
+    setCount(firstState.count)
+    pushedBlockNum = 0
+    boms = createBom(10)
+    intervalRef.current = null
+  }
 
   //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
   const [gameState, setGameState] = useState(firstState.gameState)
@@ -243,14 +245,33 @@ const Home: NextPage = () => {
 
   const [flgPosition, setFlgPosition] = useState<Pos[]>(firstState.flgPosition)
 
-  //Stateの初期化
-  const refreshState = () => {
-    setCount(firstState.count)
-    setGameState(firstState.gameState)
-    setBoard(firstState.board)
-    setFlgPosition(firstState.flgPosition)
-    pushedBlockNum = 0
-    boms = createBom(10)
+  const [count, setCount] = useState(firstState.count)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const intervalRef: any = useRef(null)
+  const countStart = useCallback(() => {
+    if (intervalRef.current !== null) {
+      return
+    }
+    intervalRef.current = setInterval(() => {
+      setCount((c) => c + 1)
+    }, 1000)
+  }, [])
+  const countStop = useCallback(() => {
+    if (intervalRef.current === null) {
+      return
+    }
+    clearInterval(intervalRef.current)
+    intervalRef.current = 1
+  }, [])
+
+  const setGameClear = () => {
+    setGameState(1)
+    countStop()
+  }
+  const setGameover = () => {
+    setGameState(99)
+    countStop()
   }
 
   const onContextMenu = (posX: number, posY: number) => {
@@ -285,7 +306,7 @@ const Home: NextPage = () => {
       newBoard[posY][posX] = 100
       newFlgPositions = removeFlgPosition(newFlgPosition)
     }
-    posArrayEquall(newFlgPositions, boms) ? setGameState(1) : setGameState(0)
+    posArrayEquall(newFlgPositions, boms) ? setGameClear() : setGameState(0)
     setFlgPosition(newFlgPositions)
     setBoard(newBoard)
   }
@@ -365,6 +386,7 @@ const Home: NextPage = () => {
 
   const onClick = (posX: number, posY: number) => {
     gameState === -1 && setGameState(0)
+    gameState === -1 && countStart()
     //元のボードに変更を加える関数
     const applyBoard = (board: number[][], res: Values[]) => {
       res.forEach((element) => {
@@ -387,7 +409,7 @@ const Home: NextPage = () => {
       boms.forEach((el) => {
         newPositions.push({ x: el.x, y: el.y, value: -1 })
       })
-      setGameState(99)
+      setGameover()
     } else {
       const newNum = calBom(posX, posY)
       if (0 < newNum && newNum < 9) {
@@ -400,7 +422,7 @@ const Home: NextPage = () => {
       }
       console.log(pushedBlockNum)
       if (pushedBlockNum === board.length ** 2 - boms.length) {
-        setGameState(1)
+        setGameClear()
         boms.forEach((el) => {
           newPositions.push({ x: el.x, y: el.y, value: 99 })
         })
