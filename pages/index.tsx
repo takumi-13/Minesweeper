@@ -19,14 +19,10 @@ import type { Pos, Values } from '../types/type'
 import { createBom } from '../utils/bom'
 import { posArrayEquall, posEquall } from '../utils/position'
 
-//let boms: Pos[] = createBom(10)
+let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
 
-let boms: Pos[] = [
-  { x: 0, y: 0 },
-  { x: 1, y: 1 },
-  { x: 2, y: 2 },
-]
+//let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
