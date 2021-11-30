@@ -1,203 +1,23 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useCallback, useRef, useState } from 'react'
-import styled from 'styled-components'
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  min-height: 100vh;
-  padding: 0 0.5rem;
-`
-
-const Main = styled.main`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5rem 0;
-`
-const Footer = styled.footer`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100px;
-  border-top: 1px solid #eaeaea;
-
-  a {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: center;
-  }
-`
-const Board = styled.div`
-  position: relative;
-  top: 0;
-  left: 6px;
-  width: 470px;
-  height: 470px;
-  margin: 10px 0;
-  background-color: grey;
-  border: inset 10px;
-`
-
-const BoardHeader = styled.div`
-  position: relative;
-  top: 0;
-  left: 6px;
-  width: 470px;
-  height: 90px;
-  margin: 10px 0;
-  overflow: hidden;
-  background-color: grey;
-  border: inset 10px;
-`
-
-const BoardFrame = styled.div`
-  width: 490px;
-  height: 600px;
-  background-color: #d7d2d8;
-  border: outset 6px;
-`
-type PositionProps = {
-  number: number
-}
-
-const Block = styled.div<PositionProps>`
-  float: left;
-  width: 50px;
-  height: 50px;
-  background-image: url(icons.png);
-  background-repeat: no-repeat;
-  background-position: ${(props) => 45 - props.number * 45 + 'px'} -4px;
-  background-size: 650px 55px;
-  border: 1px solid;
-`
-Block.defaultProps = {
-  number: 0,
-}
-
-const PushedBlock = styled(Block)<PositionProps>`
-  background-color: white;
-  border-color: black;
-`
-
-const UnPushedBlock = styled(Block)<PositionProps>`
-  cursor: pointer;
-  border-color: white;
-  :hover {
-    border-bottom-color: transparent;
-    transform: translateY(0.1875em);
-  }
-`
-
-const BomBlock = styled(Block)<PositionProps>`
-  background-color: red;
-  background-position: -460px -4px;
-`
-const FlagBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -415px -4px;
-`
-const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -370px -4px;
-`
-
-const Logo = styled.span`
-  height: 1em;
-  margin-left: 0.5rem;
-`
-const FlagNum = styled.div`
-  float: left;
-  width: 100px;
-  margin-top: 3px;
-  margin-right: 60px;
-  margin-left: 30px;
-  font-family: monospace;
-  font-size: 46px;
-  color: red;
-  text-align: center;
-  background-color: black;
-`
-const FaceIcon = styled(UnPushedBlock)<PositionProps>`
-  float: left;
-  margin-top: 10px;
-  margin-right: 20px;
-  margin-bottom: 0;
-  margin-left: 15px;
-  background-position: ${(props) => props.number} -4px;
-  background-size: 605px 50px;
-  border: outset 4px;
-`
-const TimerNum = styled.div`
-  float: left;
-  width: 100px;
-  margin-top: 3px;
-  margin-left: 50px;
-  font-family: monospace;
-  font-size: 46px;
-  color: red;
-  text-align: center;
-  background-color: black;
-`
-
-type Pos = { x: number; y: number }
-type Values = { x: number; y: number; value: number }
-
-const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
-  let res = true
-  if (ps1.length === ps2.length) {
-    for (const p1 of ps1) {
-      let b1 = false
-      for (const p2 of ps2) {
-        b1 = b1 || posEquall(p1, p2)
-      }
-      res = b1 && res
-    }
-  } else res = false
-
-  return res
-}
-
-const posEquall = (p1: Pos, p2: Pos): boolean => {
-  return p1.x === p2.x && p1.y === p2.y
-}
-
-const isPosInclude = (p1: Pos, ps: Pos[]): boolean => {
-  let res = false
-  ps.forEach((el) => {
-    res = res || posEquall(el, p1)
-  })
-  return res
-}
-
-const createBom = (bomNum: number): Pos[] => {
-  const getRandomInt = (min: number, max: number) => {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min) + min)
-  }
-  const res: Pos[] = []
-  for (let i = 0; i < bomNum; i++) {
-    let pos: Pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-    let isIncludePos = isPosInclude(pos, res)
-    while (isIncludePos) {
-      if (isIncludePos) {
-        console.log(i, pos)
-        pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-      }
-      isIncludePos = isPosInclude(pos, res)
-    }
-    res.push(pos)
-  }
-  console.log(res)
-  return res
-}
+import React, { useCallback, useRef, useState } from 'react'
+import {
+  Board,
+  BoardFrame,
+  BoardHeader,
+  BomBlock,
+  FaceIcon,
+  FlagBlock,
+  FlagNum,
+  HatenaBlock,
+  PushedBlock,
+  TimerNum,
+  UnPushedBlock,
+} from '../components/board'
+import { Container, Footer, Logo, Main } from '../components/page'
+import type { Pos, Values } from '../types/type'
+import { createBom } from '../utils/bom'
+import { posArrayEquall, posEquall } from '../utils/position'
 
 //let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
@@ -426,12 +246,14 @@ const Home: NextPage = () => {
         reachedPositions = []
         updateNewPosition({ x: posX, y: posY, value: newNum }, board)
       }
-      console.log(pushedBlockNum)
       if (pushedBlockNum === board.length ** 2 - boms.length) {
         setGameClear()
+        const newFlgPosition: Pos[] = []
         boms.forEach((el) => {
           newPositions.push({ x: el.x, y: el.y, value: 99 })
+          newFlgPosition.push({ x: el.x, y: el.y })
         })
+        setFlgPosition(newFlgPosition)
       }
     }
     //元のボードに新しいボードの値を適用
