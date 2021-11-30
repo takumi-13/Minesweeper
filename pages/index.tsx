@@ -54,7 +54,7 @@ const Home: NextPage = () => {
     setCount(firstState.count)
     pushedBlockNum = 0
     boms = createBom(10)
-    intervalRef.current = null
+    countStop()
   }
 
   //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
@@ -75,13 +75,16 @@ const Home: NextPage = () => {
     intervalRef.current = window.setInterval(() => {
       setCount((c) => c + 1)
     }, 1000)
+    console.log('Start:', intervalRef.current)
   }, [])
   const countStop = useCallback(() => {
     if (intervalRef.current === null) {
       return
     }
     clearInterval(intervalRef.current)
+    console.log('Stop:', intervalRef.current)
     intervalRef.current = null
+    console.log('Stop:', intervalRef.current)
   }, [])
 
   const setGameClear = () => {
@@ -196,7 +199,7 @@ const Home: NextPage = () => {
       }
     }
   }
-  //TODO: 算出方法の修正
+
   const calBom = (x: number, y: number) => {
     let calNum = 0
     boms.forEach(
