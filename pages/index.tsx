@@ -67,13 +67,12 @@ const Home: NextPage = () => {
 
   const [count, setCount] = useState(firstState.count)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const intervalRef: any = useRef(null)
+  const intervalRef = useRef<number | null>(null)
   const countStart = useCallback(() => {
     if (intervalRef.current !== null) {
       return
     }
-    intervalRef.current = setInterval(() => {
+    intervalRef.current = window.setInterval(() => {
       setCount((c) => c + 1)
     }, 1000)
   }, [])

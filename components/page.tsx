@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-export { Container, Main, Footer, Logo }
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +10,7 @@ const Container = styled.div`
   padding: 0 0.5rem;
 `
 
-const Main = styled.main`
+export const Main = styled.main`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -19,7 +18,7 @@ const Main = styled.main`
   justify-content: center;
   padding: 5rem 0;
 `
-const Footer = styled.footer`
+export const Footer = styled.footer`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +33,7 @@ const Footer = styled.footer`
     justify-content: center;
   }
 `
-const Logo = styled.span`
+export const Logo = styled.span`
   height: 1em;
   margin-left: 0.5rem;
 `

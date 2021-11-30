@@ -1,8 +1,7 @@
 import type { Pos } from '../types/type'
 import { isPosInclude } from './position'
-export { createBom }
 
-const createBom = (bomNum: number): Pos[] => {
+export const createBom = (bomNum: number): Pos[] => {
   const getRandomInt = (min: number, max: number) => {
     min = Math.ceil(min)
     max = Math.floor(max)

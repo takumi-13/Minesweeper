@@ -1,6 +1,5 @@
 import type { Pos } from '../types/type'
-export { posArrayEquall, isPosInclude, posEquall }
-const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
+export const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
   let res = true
   if (ps1.length === ps2.length) {
     for (const p1 of ps1) {
@@ -15,11 +14,11 @@ const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
   return res
 }
 
-const posEquall = (p1: Pos, p2: Pos): boolean => {
+export const posEquall = (p1: Pos, p2: Pos): boolean => {
   return p1.x === p2.x && p1.y === p2.y
 }
 
-const isPosInclude = (p1: Pos, ps: Pos[]): boolean => {
+export const isPosInclude = (p1: Pos, ps: Pos[]): boolean => {
   let res = false
   ps.forEach((el) => {
     res = res || posEquall(el, p1)

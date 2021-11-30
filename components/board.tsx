@@ -1,18 +1,6 @@
 import styled from 'styled-components'
-export {
-  Board,
-  BoardHeader,
-  BoardFrame,
-  PushedBlock,
-  UnPushedBlock,
-  BomBlock,
-  FlagBlock,
-  HatenaBlock,
-  FlagNum,
-  FaceIcon,
-  TimerNum,
-}
-const Board = styled.div`
+import type { PositionProps } from '../types/type'
+export const Board = styled.div`
   position: relative;
   top: 0;
   left: 6px;
@@ -23,7 +11,7 @@ const Board = styled.div`
   border: inset 10px;
 `
 
-const BoardHeader = styled.div`
+export const BoardHeader = styled.div`
   position: relative;
   top: 0;
   left: 6px;
@@ -35,16 +23,12 @@ const BoardHeader = styled.div`
   border: inset 10px;
 `
 
-const BoardFrame = styled.div`
+export const BoardFrame = styled.div`
   width: 490px;
   height: 600px;
   background-color: #d7d2d8;
   border: outset 6px;
 `
-type PositionProps = {
-  number: number
-}
-
 const Block = styled.div<PositionProps>`
   float: left;
   width: 50px;
@@ -59,12 +43,12 @@ Block.defaultProps = {
   number: 0,
 }
 
-const PushedBlock = styled(Block)<PositionProps>`
+export const PushedBlock = styled(Block)<PositionProps>`
   background-color: white;
   border-color: black;
 `
 
-const UnPushedBlock = styled(Block)<PositionProps>`
+export const UnPushedBlock = styled(Block)<PositionProps>`
   cursor: pointer;
   border-color: white;
   :hover {
@@ -73,18 +57,18 @@ const UnPushedBlock = styled(Block)<PositionProps>`
   }
 `
 
-const BomBlock = styled(Block)<PositionProps>`
+export const BomBlock = styled(Block)<PositionProps>`
   background-color: red;
   background-position: -460px -4px;
 `
-const FlagBlock = styled(UnPushedBlock)<PositionProps>`
+export const FlagBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -415px -4px;
 `
-const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
+export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -370px -4px;
 `
 
-const FlagNum = styled.div`
+export const FlagNum = styled.div`
   float: left;
   width: 100px;
   margin-top: 3px;
@@ -96,7 +80,7 @@ const FlagNum = styled.div`
   text-align: center;
   background-color: black;
 `
-const FaceIcon = styled(UnPushedBlock)<PositionProps>`
+export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   float: left;
   margin-top: 10px;
   margin-right: 20px;
@@ -106,7 +90,7 @@ const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   background-size: 605px 50px;
   border: outset 4px;
 `
-const TimerNum = styled.div`
+export const TimerNum = styled.div`
   float: left;
   width: 100px;
   margin-top: 3px;
