@@ -199,7 +199,7 @@ const Home: NextPage = () => {
       }
     }
   }
-  //TODO: 算出方法の修正
+
   const calBom = (x: number, y: number) => {
     let calNum = 0
     boms.forEach(
