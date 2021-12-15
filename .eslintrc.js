@@ -26,6 +26,8 @@ module.exports = {
     },
   },
   rules: {
+    complexity: ['error', 4],
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'max-depth': ['error', 1],
     'max-nested-callbacks': ['error', 3],
     'prefer-template': 'error',

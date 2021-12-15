@@ -18,6 +18,12 @@ export const createBom = (bomNum: number): Pos[] => {
     }
     res.push(pos)
   })
-  console.log(res)
+  //console.log(res)
   return res
+}
+
+export const calBom = (x: number, y: number, boms: Pos[]) => {
+  let calNum = 0
+  boms.forEach((elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++)
+  return calNum
 }

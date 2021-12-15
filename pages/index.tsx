@@ -14,9 +14,9 @@ import {
   TimerNum,
   UnPushedBlock,
 } from '../components/board'
-import { Container, Footer, Logo, Main } from '../components/page'
+import { Container, Main } from '../components/page'
 import type { Pos, Values } from '../types/type'
-import { createBom } from '../utils/bom'
+import { calBom, createBom } from '../utils/bom'
 import { posArrayEquall, posEquall } from '../utils/position'
 
 let boms: Pos[] = createBom(10)
@@ -25,7 +25,6 @@ let pushedBlockNum = 0
 //let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
 
 const Home: NextPage = () => {
-  if (typeof document !== 'undefined') document.oncontextmenu = () => false
   // prettier-ignore
   let newPositions: Values[] = []
   let reachedPositions: Pos[] = []
@@ -48,6 +47,7 @@ const Home: NextPage = () => {
   }
   //Stateの初期化
   const refreshState = () => {
+    if (typeof document !== 'undefined') document.oncontextmenu = () => false
     setGameState(firstState.gameState)
     setBoard(firstState.board)
     setFlgPosition(firstState.flgPosition)
@@ -75,16 +75,13 @@ const Home: NextPage = () => {
     intervalRef.current = window.setInterval(() => {
       setCount((c) => c + 1)
     }, 1000)
-    console.log('Start:', intervalRef.current)
   }, [])
   const countStop = useCallback(() => {
     if (intervalRef.current === null) {
       return
     }
     clearInterval(intervalRef.current)
-    console.log('Stop:', intervalRef.current)
     intervalRef.current = null
-    console.log('Stop:', intervalRef.current)
   }, [])
 
   const setGameClear = () => {
@@ -96,9 +93,15 @@ const Home: NextPage = () => {
     countStop()
   }
 
+  const checkGameStart = () => {
+    if (gameState === -1) {
+      setGameState(0)
+      countStart()
+    }
+  }
+
   const onContextMenu = (posX: number, posY: number) => {
-    gameState === -1 && setGameState(0)
-    gameState === -1 && countStart()
+    checkGameStart()
     const removeFlgPosition = (flg: Pos) => {
       const res = [...flgPosition]
       let count = 0
@@ -144,60 +147,104 @@ const Home: NextPage = () => {
     return res
   }
 
-  const updateNewPosition = (vs: Values, newboard: number[][]) => {
-    newPositions.push(vs)
-
-    //訪れたことのないブロックの場合再帰処理
-    const isReached: boolean = checkReached(vs)
-    if (isReached) {
-      return
-    }
-    pushedBlockNum++
-    if (vs.value !== 0) {
-      return
-    }
-
-    vs.y < 8 &&
-      newboard[vs.y + 1][vs.x] === 9 &&
-      updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, newboard)
-    0 < vs.y &&
-      newboard[vs.y - 1][vs.x] === 9 &&
-      updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, newboard)
-    vs.x < 8 &&
-      newboard[vs.y][vs.x + 1] === 9 &&
-      updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, newboard)
-    0 < vs.x &&
-      newboard[vs.y][vs.x - 1] === 9 &&
-      updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
-    8 > vs.x &&
-      8 > vs.y &&
-      newboard[vs.y + 1][vs.x + 1] === 9 &&
-      updateNewPosition({ x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1) }, newboard)
-    0 < vs.x &&
-      8 > vs.y &&
-      newboard[vs.y + 1][vs.x - 1] === 9 &&
-      updateNewPosition({ x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1) }, newboard)
-    8 > vs.x &&
-      0 < vs.y &&
-      newboard[vs.y - 1][vs.x + 1] === 9 &&
-      updateNewPosition({ x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1) }, newboard)
-    0 < vs.x &&
-      0 < vs.y &&
-      newboard[vs.y - 1][vs.x - 1] === 9 &&
-      updateNewPosition({ x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1) }, newboard)
+  const checkInBoard = (vs: Values): boolean => {
+    return vs.x in [0, 1, 2, 3, 4, 5, 6, 7, 8] && vs.y in [0, 1, 2, 3, 4, 5, 6, 7, 8]
   }
 
-  const calBom = (x: number, y: number) => {
-    let calNum = 0
-    boms.forEach(
-      (elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++
+  const checkCanPush = (vs: Values, newboard: number[][]): boolean => {
+    const isInboard = checkInBoard(vs)
+    let isUnPushed = true
+    if (isInboard) {
+      isUnPushed = newboard[vs.y][vs.x] === 9
+    }
+    return isInboard && isUnPushed
+  }
+
+  const checkDoPush = (vs: Values, newboard: number[][]): boolean => {
+    const canPush = checkCanPush(vs, newboard)
+    const isReached = checkReached(vs)
+    return canPush && !isReached
+  }
+
+  const checkZero = (vs: Values): boolean => {
+    return vs.value !== 0
+  }
+
+  const checkOneToEight = (isNotZero: boolean, doPush: boolean): boolean => {
+    return isNotZero && doPush
+  }
+
+  const checkNotRecursive = (isNotZero: boolean, doPush: boolean): boolean => {
+    return !doPush || isNotZero
+  }
+
+  const updateNewPosition = (vs: Values, newboard: number[][]) => {
+    //訪れたことのないブロックの場合再帰処理
+    const isNotZero = checkZero(vs)
+
+    const doPush = checkDoPush(vs, newboard)
+
+    const isOneToEight = checkOneToEight(isNotZero, doPush)
+    const isNotRecursive = checkNotRecursive(isNotZero, doPush)
+
+    if (isOneToEight) {
+      pushedBlockNum++
+      newPositions.push(vs)
+    }
+    if (isNotRecursive) {
+      return
+    }
+
+    pushedBlockNum++
+    newPositions.push(vs)
+
+    updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1, boms) }, newboard)
+    updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1, boms) }, newboard)
+    updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y, boms) }, newboard)
+    updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y, boms) }, newboard)
+    updateNewPosition(
+      { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1, boms) },
+      newboard
     )
-    return calNum
+    updateNewPosition(
+      { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1, boms) },
+      newboard
+    )
+    updateNewPosition(
+      { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1, boms) },
+      newboard
+    )
+    updateNewPosition(
+      { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1, boms) },
+      newboard
+    )
+  }
+
+  const updateNewNum = (newNum: number, posX: number, posY: number) => {
+    if (0 < newNum && newNum < 9) {
+      newPositions = [{ x: posX, y: posY, value: newNum }]
+      pushedBlockNum++
+    } else {
+      newPositions = []
+      reachedPositions = []
+      updateNewPosition({ x: posX, y: posY, value: newNum }, board)
+    }
+  }
+
+  const judgePushAllBlocks = () => {
+    if (pushedBlockNum === board.length ** 2 - boms.length) {
+      setGameClear()
+      const newFlgPosition: Pos[] = []
+      boms.forEach((el) => {
+        newPositions.push({ x: el.x, y: el.y, value: 99 })
+        newFlgPosition.push({ x: el.x, y: el.y })
+      })
+      setFlgPosition(newFlgPosition)
+    }
   }
 
   const onClick = (posX: number, posY: number) => {
-    gameState === -1 && setGameState(0)
-    gameState === -1 && countStart()
+    checkGameStart()
     //元のボードに変更を加える関数
     const applyBoard = (board: number[][], res: Values[]) => {
       res.forEach((element) => {
@@ -223,26 +270,9 @@ const Home: NextPage = () => {
       applyBoard(newBoard, newPositions)
       return
     }
-
-    const newNum = calBom(posX, posY)
-    if (0 < newNum && newNum < 9) {
-      newPositions = [{ x: posX, y: posY, value: newNum }]
-      pushedBlockNum++
-    } else {
-      newPositions = []
-      reachedPositions = []
-      updateNewPosition({ x: posX, y: posY, value: newNum }, board)
-    }
-    if (pushedBlockNum === board.length ** 2 - boms.length) {
-      setGameClear()
-      const newFlgPosition: Pos[] = []
-      boms.forEach((el) => {
-        newPositions.push({ x: el.x, y: el.y, value: 99 })
-        newFlgPosition.push({ x: el.x, y: el.y })
-      })
-      setFlgPosition(newFlgPosition)
-    }
-
+    const newNum = calBom(posX, posY, boms)
+    updateNewNum(newNum, posX, posY)
+    judgePushAllBlocks()
     //元のボードに新しいボードの値を適用
     applyBoard(newBoard, newPositions)
   }
@@ -307,19 +337,6 @@ const Home: NextPage = () => {
           </Board>
         </BoardFrame>
       </Main>
-
-      <Footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Logo>
-            <img src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </Logo>
-        </a>
-      </Footer>
     </Container>
   )
 }
