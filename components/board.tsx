@@ -35,10 +35,11 @@ const Block = styled.div<PositionProps>`
   height: 50px;
   background-image: url(icons.png);
   background-repeat: no-repeat;
-  background-position: ${(props) => 45 - props.number * 45 + 'px'} -4px;
+  background-position: ${(props) => 45 - props.number * 45}px -4px;
   background-size: 650px 55px;
   border: 1px solid;
 `
+
 Block.defaultProps = {
   number: 0,
 }
@@ -71,18 +72,20 @@ export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
 export const FlagNum = styled.div`
   float: left;
   width: 100px;
-  margin-top: 3px;
+  height: 55px;
+  margin-top: 10px;
   margin-right: 60px;
   margin-left: 30px;
   font-family: monospace;
   font-size: 46px;
   color: red;
   text-align: center;
+  vertical-align: middle;
   background-color: black;
 `
 export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   float: left;
-  margin-top: 10px;
+  margin-top: 12px;
   margin-right: 20px;
   margin-bottom: 0;
   margin-left: 15px;
@@ -93,11 +96,13 @@ export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
 export const TimerNum = styled.div`
   float: left;
   width: 100px;
-  margin-top: 3px;
+  height: 55px;
+  margin-top: 10px;
   margin-left: 50px;
   font-family: monospace;
   font-size: 46px;
   color: red;
   text-align: center;
+  vertical-align: middle;
   background-color: black;
 `
