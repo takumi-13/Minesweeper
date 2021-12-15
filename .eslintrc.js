@@ -26,6 +26,7 @@ module.exports = {
     },
   },
   rules: {
+    'max-depth': ['error', 1],
     'max-nested-callbacks': ['error', 3],
     'prefer-template': 'error',
     'react/react-in-jsx-scope': 'off',

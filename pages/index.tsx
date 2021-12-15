@@ -138,11 +138,7 @@ const Home: NextPage = () => {
   const checkReached = (vs: Values): boolean => {
     let res = false
     for (const item of reachedPositions) {
-      const b1 = posEquall(item, vs)
-      if (b1) {
-        res = true
-        break
-      }
+      posEquall(item, vs) && (res = true)
     }
     !res && reachedPositions.push({ x: vs.x, y: vs.y })
     return res
@@ -153,51 +149,42 @@ const Home: NextPage = () => {
 
     //訪れたことのないブロックの場合再帰処理
     const isReached: boolean = checkReached(vs)
-    if (!isReached) {
-      pushedBlockNum++
-      if (vs.value === 0) {
-        vs.y < 8 &&
-          newboard[vs.y + 1][vs.x] === 9 &&
-          updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, newboard)
-        0 < vs.y &&
-          newboard[vs.y - 1][vs.x] === 9 &&
-          updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, newboard)
-        vs.x < 8 &&
-          newboard[vs.y][vs.x + 1] === 9 &&
-          updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, newboard)
-        0 < vs.x &&
-          newboard[vs.y][vs.x - 1] === 9 &&
-          updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
-        8 > vs.x &&
-          8 > vs.y &&
-          newboard[vs.y + 1][vs.x + 1] === 9 &&
-          updateNewPosition(
-            { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1) },
-            newboard
-          )
-        0 < vs.x &&
-          8 > vs.y &&
-          newboard[vs.y + 1][vs.x - 1] === 9 &&
-          updateNewPosition(
-            { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1) },
-            newboard
-          )
-        8 > vs.x &&
-          0 < vs.y &&
-          newboard[vs.y - 1][vs.x + 1] === 9 &&
-          updateNewPosition(
-            { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1) },
-            newboard
-          )
-        0 < vs.x &&
-          0 < vs.y &&
-          newboard[vs.y - 1][vs.x - 1] === 9 &&
-          updateNewPosition(
-            { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1) },
-            newboard
-          )
-      }
+    if (isReached) {
+      return
     }
+    pushedBlockNum++
+    if (vs.value !== 0) {
+      return
+    }
+
+    vs.y < 8 &&
+      newboard[vs.y + 1][vs.x] === 9 &&
+      updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1) }, newboard)
+    0 < vs.y &&
+      newboard[vs.y - 1][vs.x] === 9 &&
+      updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1) }, newboard)
+    vs.x < 8 &&
+      newboard[vs.y][vs.x + 1] === 9 &&
+      updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y) }, newboard)
+    0 < vs.x &&
+      newboard[vs.y][vs.x - 1] === 9 &&
+      updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y) }, newboard)
+    8 > vs.x &&
+      8 > vs.y &&
+      newboard[vs.y + 1][vs.x + 1] === 9 &&
+      updateNewPosition({ x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1) }, newboard)
+    0 < vs.x &&
+      8 > vs.y &&
+      newboard[vs.y + 1][vs.x - 1] === 9 &&
+      updateNewPosition({ x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1) }, newboard)
+    8 > vs.x &&
+      0 < vs.y &&
+      newboard[vs.y - 1][vs.x + 1] === 9 &&
+      updateNewPosition({ x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1) }, newboard)
+    0 < vs.x &&
+      0 < vs.y &&
+      newboard[vs.y - 1][vs.x - 1] === 9 &&
+      updateNewPosition({ x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1) }, newboard)
   }
 
   const calBom = (x: number, y: number) => {
@@ -228,32 +215,34 @@ const Home: NextPage = () => {
     //周囲のボム数が0の場合，さらに周囲のブロックについても判定
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
-      //newPositions = [{ x: posX, y: posY, value: -1 }]
       newPositions = []
       boms.forEach((el) => {
         newPositions.push({ x: el.x, y: el.y, value: -1 })
       })
       setGameover()
-    } else {
-      const newNum = calBom(posX, posY)
-      if (0 < newNum && newNum < 9) {
-        newPositions = [{ x: posX, y: posY, value: newNum }]
-        pushedBlockNum++
-      } else {
-        newPositions = []
-        reachedPositions = []
-        updateNewPosition({ x: posX, y: posY, value: newNum }, board)
-      }
-      if (pushedBlockNum === board.length ** 2 - boms.length) {
-        setGameClear()
-        const newFlgPosition: Pos[] = []
-        boms.forEach((el) => {
-          newPositions.push({ x: el.x, y: el.y, value: 99 })
-          newFlgPosition.push({ x: el.x, y: el.y })
-        })
-        setFlgPosition(newFlgPosition)
-      }
+      applyBoard(newBoard, newPositions)
+      return
     }
+
+    const newNum = calBom(posX, posY)
+    if (0 < newNum && newNum < 9) {
+      newPositions = [{ x: posX, y: posY, value: newNum }]
+      pushedBlockNum++
+    } else {
+      newPositions = []
+      reachedPositions = []
+      updateNewPosition({ x: posX, y: posY, value: newNum }, board)
+    }
+    if (pushedBlockNum === board.length ** 2 - boms.length) {
+      setGameClear()
+      const newFlgPosition: Pos[] = []
+      boms.forEach((el) => {
+        newPositions.push({ x: el.x, y: el.y, value: 99 })
+        newFlgPosition.push({ x: el.x, y: el.y })
+      })
+      setFlgPosition(newFlgPosition)
+    }
+
     //元のボードに新しいボードの値を適用
     applyBoard(newBoard, newPositions)
   }

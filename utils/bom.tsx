@@ -8,18 +8,16 @@ export const createBom = (bomNum: number): Pos[] => {
     return Math.floor(Math.random() * (max - min) + min)
   }
   const res: Pos[] = []
-  for (let i = 0; i < bomNum; i++) {
+  const nums: number[] = [...Array(bomNum)].map((v, i) => i)
+  nums.forEach(() => {
     let pos: Pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
     let isIncludePos = isPosInclude(pos, res)
     while (isIncludePos) {
-      if (isIncludePos) {
-        console.log(i, pos)
-        pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-      }
+      pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
       isIncludePos = isPosInclude(pos, res)
     }
     res.push(pos)
-  }
+  })
   console.log(res)
   return res
 }
