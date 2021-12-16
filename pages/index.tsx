@@ -1,71 +1,44 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
-import {
-  Board,
-  BoardFrame,
-  BoardHeader,
-  BomBlock,
-  FaceIcon,
-  FlagBlock,
-  FlagNum,
-  HatenaBlock,
-  PushedBlock,
-  TimerNum,
-  UnPushedBlock,
-} from '../components/board'
+import { Board, BoardFrame } from '../components/board'
+import { BoardHead } from '../components/boardHead'
+import { BoardMain } from '../components/boardMain'
 import { Container, Main } from '../components/page'
 import type { Pos, Values } from '../types/type'
 import { calBom, createBom } from '../utils/bom'
+import { FIRST_STATE } from '../utils/firstState'
 import { posArrayEquall, posEquall } from '../utils/position'
+import { UpdatePosition } from '../utils/updatePosition'
 
 let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
 
-//let boms: Pos[] = [{ x: 0, y: 0 },{ x: 1, y: 1 },{ x: 2, y: 2 },]
-
 const Home: NextPage = () => {
   // prettier-ignore
-  let newPositions: Values[] = []
-  let reachedPositions: Pos[] = []
 
-  const firstState = {
-    count: 0,
-    gameState: -1,
-    flgPosition: [],
-    board: [
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-      [9, 9, 9, 9, 9, 9, 9, 9, 9],
-    ],
-  }
   //Stateの初期化
   const refreshState = () => {
     if (typeof document !== 'undefined') document.oncontextmenu = () => false
-    setGameState(firstState.gameState)
-    setBoard(firstState.board)
-    setFlgPosition(firstState.flgPosition)
-    setCount(firstState.count)
+    setGameState(FIRST_STATE.gameState)
+    setBoard(FIRST_STATE.board)
+    setFlgPosition(FIRST_STATE.flgPosition)
+    setCount(FIRST_STATE.count)
     pushedBlockNum = 0
     boms = createBom(10)
     countStop()
   }
-
   //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
-  const [gameState, setGameState] = useState(firstState.gameState)
+  const [gameState, setGameState] = useState(FIRST_STATE.gameState)
 
   // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
-  const [board, setBoard] = useState(firstState.board)
+  const [board, setBoard] = useState(FIRST_STATE.board)
 
-  const [flgPosition, setFlgPosition] = useState<Pos[]>(firstState.flgPosition)
+  const [flgPosition, setFlgPosition] = useState<Pos[]>(FIRST_STATE.flgPosition)
 
-  const [count, setCount] = useState(firstState.count)
+  const [count, setCount] = useState(FIRST_STATE.count)
+
+  const states = { gameState, board, flgPosition, count }
 
   const intervalRef = useRef<number | null>(null)
   const countStart = useCallback(() => {
@@ -137,101 +110,7 @@ const Home: NextPage = () => {
     setFlgPosition(newFlgPositions)
     setBoard(newBoard)
   }
-
-  const checkReached = (vs: Values): boolean => {
-    let res = false
-    for (const item of reachedPositions) {
-      posEquall(item, vs) && (res = true)
-    }
-    !res && reachedPositions.push({ x: vs.x, y: vs.y })
-    return res
-  }
-
-  const checkInBoard = (vs: Values): boolean => {
-    return vs.x in [0, 1, 2, 3, 4, 5, 6, 7, 8] && vs.y in [0, 1, 2, 3, 4, 5, 6, 7, 8]
-  }
-
-  const checkCanPush = (vs: Values, newboard: number[][]): boolean => {
-    const isInboard = checkInBoard(vs)
-    let isUnPushed = true
-    if (isInboard) {
-      isUnPushed = newboard[vs.y][vs.x] === 9
-    }
-    return isInboard && isUnPushed
-  }
-
-  const checkDoPush = (vs: Values, newboard: number[][]): boolean => {
-    const canPush = checkCanPush(vs, newboard)
-    const isReached = checkReached(vs)
-    return canPush && !isReached
-  }
-
-  const checkZero = (vs: Values): boolean => {
-    return vs.value !== 0
-  }
-
-  const checkOneToEight = (isNotZero: boolean, doPush: boolean): boolean => {
-    return isNotZero && doPush
-  }
-
-  const checkNotRecursive = (isNotZero: boolean, doPush: boolean): boolean => {
-    return !doPush || isNotZero
-  }
-
-  const updateNewPosition = (vs: Values, newboard: number[][]) => {
-    //訪れたことのないブロックの場合再帰処理
-    const isNotZero = checkZero(vs)
-
-    const doPush = checkDoPush(vs, newboard)
-
-    const isOneToEight = checkOneToEight(isNotZero, doPush)
-    const isNotRecursive = checkNotRecursive(isNotZero, doPush)
-
-    if (isOneToEight) {
-      pushedBlockNum++
-      newPositions.push(vs)
-    }
-    if (isNotRecursive) {
-      return
-    }
-
-    pushedBlockNum++
-    newPositions.push(vs)
-
-    updateNewPosition({ x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1, boms) }, newboard)
-    updateNewPosition({ x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1, boms) }, newboard)
-    updateNewPosition({ x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y, boms) }, newboard)
-    updateNewPosition({ x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y, boms) }, newboard)
-    updateNewPosition(
-      { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1, boms) },
-      newboard
-    )
-    updateNewPosition(
-      { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1, boms) },
-      newboard
-    )
-    updateNewPosition(
-      { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1, boms) },
-      newboard
-    )
-    updateNewPosition(
-      { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1, boms) },
-      newboard
-    )
-  }
-
-  const updateNewNum = (newNum: number, posX: number, posY: number) => {
-    if (0 < newNum && newNum < 9) {
-      newPositions = [{ x: posX, y: posY, value: newNum }]
-      pushedBlockNum++
-    } else {
-      newPositions = []
-      reachedPositions = []
-      updateNewPosition({ x: posX, y: posY, value: newNum }, board)
-    }
-  }
-
-  const judgePushAllBlocks = () => {
+  const judgePushAllBlocks = (newPositions: Values[]) => {
     if (pushedBlockNum === board.length ** 2 - boms.length) {
       setGameClear()
       const newFlgPosition: Pos[] = []
@@ -243,26 +122,21 @@ const Home: NextPage = () => {
     }
   }
 
+  const applyBoard = (board: number[][], res: Values[]) => {
+    res.forEach((element) => {
+      board[element.y][element.x] = element.value
+    })
+    setBoard(board)
+  }
+
   const onClick = (posX: number, posY: number) => {
     checkGameStart()
-    //元のボードに変更を加える関数
-    const applyBoard = (board: number[][], res: Values[]) => {
-      res.forEach((element) => {
-        board[element.y][element.x] = element.value
-      })
-      setBoard(board)
-    }
-    //現在地にボムがあるか判定
     let isBom = false
     boms.forEach((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
 
-    //現在地にボムがあった場合，gameStateを99に,ボードの値を-1に設定
-    //ボムがなかった場合，周囲のボム数を数える
-    //周囲のボム数が1-8の場合，現在地を1-8に設定し終了
-    //周囲のボム数が0の場合，さらに周囲のブロックについても判定
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
-      newPositions = []
+      const newPositions: Values[] = []
       boms.forEach((el) => {
         newPositions.push({ x: el.x, y: el.y, value: -1 })
       })
@@ -271,10 +145,29 @@ const Home: NextPage = () => {
       return
     }
     const newNum = calBom(posX, posY, boms)
-    updateNewNum(newNum, posX, posY)
-    judgePushAllBlocks()
-    //元のボードに新しいボードの値を適用
+    const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
+    updatePosition.makeNewBoard(newNum, posX, posY)
+    const newPositions = updatePosition.getNewPositions
+    judgePushAllBlocks(newPositions)
+    pushedBlockNum = updatePosition.pushedBlockNum
     applyBoard(newBoard, newPositions)
+  }
+
+  const makeBoard = () => {
+    return board.map((row, y) =>
+      row.map((num, x) => (
+        <BoardMain
+          states={states}
+          vars={{ x, y, num, boms }}
+          funs={{ onClick, onContextMenu }}
+          key={`${x}-${y}`}
+        />
+      ))
+    )
+  }
+
+  const makeHeader = () => {
+    return <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
   }
 
   return (
@@ -287,58 +180,11 @@ const Home: NextPage = () => {
 
       <Main>
         <BoardFrame>
-          <BoardHeader>
-            <FlagNum>{`000${boms.length - flgPosition.length}`.slice(-3)}</FlagNum>
-            {gameState === 0 || gameState === -1 ? (
-              <FaceIcon number={11.6} onClick={() => refreshState()}>
-                <a></a>
-              </FaceIcon>
-            ) : gameState === 1 ? (
-              <FaceIcon number={12.55} onClick={() => refreshState()}>
-                <a></a>
-              </FaceIcon>
-            ) : (
-              <FaceIcon number={13.5} onClick={() => refreshState()}>
-                <a></a>
-              </FaceIcon>
-            )}
-            <TimerNum>{`000${count}`.slice(-3)}</TimerNum>
-          </BoardHeader>
-
-          <Board>
-            {board.map((row, y) =>
-              row.map((num, x) =>
-                num === 9 ? (
-                  <UnPushedBlock
-                    key={`${x}-${y}`}
-                    onClick={() => (gameState === 0 || gameState === -1) && onClick(x, y)}
-                    onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
-                    number={0}
-                  />
-                ) : num === -1 ? (
-                  <BomBlock key={`${x}-${y}`} number={0} />
-                ) : num === 99 ? (
-                  <FlagBlock
-                    key={`${x}-${y}`}
-                    onContextMenu={() => onContextMenu(x, y)}
-                    number={0}
-                  />
-                ) : num === 100 ? (
-                  <HatenaBlock
-                    key={`${x}-${y}`}
-                    onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
-                    number={0}
-                  />
-                ) : (
-                  <PushedBlock key={`${x}-${y}`} number={num} />
-                )
-              )
-            )}
-          </Board>
+          {makeHeader()}
+          <Board>{makeBoard()}</Board>
         </BoardFrame>
       </Main>
     </Container>
   )
 }
-
 export default Home
