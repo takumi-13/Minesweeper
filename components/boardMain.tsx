@@ -32,7 +32,7 @@ export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
   const flgPosition = states.flgPosition
 
   const [boms, num, x, y] = [vars.boms, vars.num, vars.x, vars.y]
-  const [onClick,onContextMenu = [funs.onClick,funs.onContextMenu]
+  const [onClick, onContextMenu] = [funs.onClick, funs.onContextMenu]
 
   const decidePushStyle = () => {
     return num === -1 ? (
