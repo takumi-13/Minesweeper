@@ -12,7 +12,7 @@ import { posArrayEquall, posEquall } from '../utils/position'
 import { UpdatePosition } from '../utils/updatePosition'
 
 let boms: Pos[] = createBom(10)
-console.log(boms)
+//console.log(boms)
 let pushedBlockNum = 0
 
 const Home: NextPage = () => {
@@ -148,7 +148,6 @@ const Home: NextPage = () => {
     updatePosition.makeNewBoard(newNum, posX, posY)
     const newPositions = updatePosition.getNewPositions
     pushedBlockNum = updatePosition.pushedBlockNum
-    console.log(pushedBlockNum)
     judgePushAllBlocks(newPositions)
     applyBoard(newBoard, newPositions)
   }
