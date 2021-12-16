@@ -31,12 +31,8 @@ export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
   const gameState = states.gameState
   const flgPosition = states.flgPosition
 
-  const boms = vars.boms
-  const num = vars.num
-  const x = vars.x
-  const y = vars.y
-  const onClick = funs.onClick
-  const onContextMenu = funs.onContextMenu
+  const [boms, num, x, y] = [vars.boms, vars.num, vars.x, vars.y]
+  const [onClick,onContextMenu = [funs.onClick,funs.onContextMenu]
 
   const decidePushStyle = () => {
     return num === -1 ? (
