@@ -269,7 +269,7 @@ const Home: NextPage = () => {
       <Main>
         <BoardFrame>
           <BoardHeader>
-            <FlagNum>{('000' + (boms.length - flgPosition.length)).slice(-3)}</FlagNum>
+            <FlagNum>{`000${boms.length - flgPosition.length}`.slice(-3)}</FlagNum>
             {gameState === 0 || gameState === -1 ? (
               <FaceIcon number={11.6} onClick={() => refreshState()}>
                 <a></a>
@@ -283,7 +283,7 @@ const Home: NextPage = () => {
                 <a></a>
               </FaceIcon>
             )}
-            <TimerNum>{('000' + count).slice(-3)}</TimerNum>
+            <TimerNum>{`000${count}`.slice(-3)}</TimerNum>
           </BoardHeader>
 
           <Board>
