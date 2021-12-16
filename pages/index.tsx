@@ -12,14 +12,13 @@ import { posArrayEquall, posEquall } from '../utils/position'
 import { UpdatePosition } from '../utils/updatePosition'
 
 let boms: Pos[] = createBom(10)
+console.log(boms)
 let pushedBlockNum = 0
 
 const Home: NextPage = () => {
-  // prettier-ignore
-
+  if (typeof document !== 'undefined') document.oncontextmenu = () => false
   //Stateの初期化
   const refreshState = () => {
-    if (typeof document !== 'undefined') document.oncontextmenu = () => false
     setGameState(FIRST_STATE.gameState)
     setBoard(FIRST_STATE.board)
     setFlgPosition(FIRST_STATE.flgPosition)
@@ -148,8 +147,9 @@ const Home: NextPage = () => {
     const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
     updatePosition.makeNewBoard(newNum, posX, posY)
     const newPositions = updatePosition.getNewPositions
-    judgePushAllBlocks(newPositions)
     pushedBlockNum = updatePosition.pushedBlockNum
+    console.log(pushedBlockNum)
+    judgePushAllBlocks(newPositions)
     applyBoard(newBoard, newPositions)
   }
 

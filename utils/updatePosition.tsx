@@ -45,7 +45,7 @@ export const UpdatePosition = class {
     if (isNotRecursive) {
       return
     }
-
+    this.pushedBlockNum++
     this.newPositions.push(vs)
 
     this.updateNewPosition(
