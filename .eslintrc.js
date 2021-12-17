@@ -26,6 +26,11 @@ module.exports = {
     },
   },
   rules: {
+    'max-lines': ['error', 200],
+    complexity: ['error', 4],
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'max-depth': ['error', 1],
+    'max-nested-callbacks': ['error', 3],
     'prefer-template': 'error',
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
