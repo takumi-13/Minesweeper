@@ -18,7 +18,6 @@ export const createBom = (bomNum: number): Pos[] => {
     }
     res.push(pos)
   })
-  //console.log(res)
   return res
 }
 

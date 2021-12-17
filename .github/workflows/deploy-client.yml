@@ -25,7 +25,7 @@ jobs:
         id: yarn-cache
         with:
           path: 'node_modules'
-            key: client-yarn-${{ hashFiles('yarn.lock') }}
+          key: client-yarn-${{ hashFiles('yarn.lock') }}
       - run: yarn install
         if: steps.client-yarn-cache.outputs.cache-hit != 'true'
       - run: yarn build
