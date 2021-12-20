@@ -151,20 +151,24 @@ const Home: NextPage = () => {
     applyBoard(newBoard, newPositions)
   }
 
-  const makeBoard = () => {
-    return board.map((row, y) =>
-      row.map((num, x) => (
-        <BoardMain
-          states={states}
-          vars={{ x, y, num, boms }}
-          funs={{ onClick, onContextMenu }}
-          key={`${x}-${y}`}
-        />
-      ))
+  const BoardContent = () => {
+    return (
+      <Board>
+        {board.map((row, y) =>
+          row.map((num, x) => (
+            <BoardMain
+              states={states}
+              vars={{ x, y, num, boms }}
+              funs={{ onClick, onContextMenu }}
+              key={`${x}-${y}`}
+            />
+          ))
+        )}
+      </Board>
     )
   }
 
-  const makeHeader = () => {
+  const BoardHeader = () => {
     return <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
   }
 
@@ -178,8 +182,8 @@ const Home: NextPage = () => {
 
       <Main>
         <BoardFrame>
-          {makeHeader()}
-          <Board>{makeBoard()}</Board>
+          <BoardHeader />
+          <BoardContent />
         </BoardFrame>
       </Main>
     </Container>

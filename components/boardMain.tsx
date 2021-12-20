@@ -34,15 +34,15 @@ export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
   const [boms, num, x, y] = [vars.boms, vars.num, vars.x, vars.y]
   const [onClick, onContextMenu] = [funs.onClick, funs.onContextMenu]
 
-  const decidePushStyle = () => {
+  const canPlayGame = gameState in [0, 1]
+  const PushedBlocks = () => {
     return num === -1 ? (
       <BomBlock number={0} />
     ) : num === 99 ? (
-      <FlagBlock onContextMenu={() => onContextMenu(x, y)} number={0} />
+      <FlagBlock onContextMenu={() => canPlayGame && onContextMenu(x, y)} number={0} />
     ) : num === 100 ? (
       <HatenaBlock
-        key={`${x}-${y}`}
-        onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
+        onContextMenu={() => canPlayGame && flgPosition.length < boms.length && onContextMenu(x, y)}
         number={0}
       />
     ) : (
@@ -51,11 +51,11 @@ export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
   }
   return vars.num === 9 ? (
     <UnPushedBlock
-      onClick={() => (gameState === 0 || gameState === -1) && onClick(x, y)}
-      onContextMenu={() => flgPosition.length < boms.length && onContextMenu(x, y)}
+      onClick={() => canPlayGame && onClick(x, y)}
+      onContextMenu={() => canPlayGame && flgPosition.length < boms.length && onContextMenu(x, y)}
       number={0}
     />
   ) : (
-    decidePushStyle()
+    <PushedBlocks />
   )
 }
