@@ -34,7 +34,7 @@ export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
   const [boms, num, x, y] = [vars.boms, vars.num, vars.x, vars.y]
   const [onClick, onContextMenu] = [funs.onClick, funs.onContextMenu]
 
-  const canPlayGame = gameState in [0, 1]
+  const canPlayGame = [0, -1].includes(gameState)
   const PushedBlocks = () => {
     return num === -1 ? (
       <BomBlock number={0} />
