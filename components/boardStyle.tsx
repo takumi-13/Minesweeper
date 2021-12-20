@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import type { PositionProps } from '../types/type'
+
 export const Board = styled.div`
   position: relative;
   top: 0;
@@ -11,7 +12,7 @@ export const Board = styled.div`
   border: inset 10px;
 `
 
-export const BoardHeader = styled.div`
+export const BoardHead = styled.div`
   position: relative;
   top: 0;
   left: 6px;

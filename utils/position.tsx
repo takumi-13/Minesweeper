@@ -1,16 +1,14 @@
 import type { Pos } from '../types/type'
 export const posArrayEquall = (ps1: Pos[], ps2: Pos[]): boolean => {
   let res = true
-  if (ps1.length === ps2.length) {
-    for (const p1 of ps1) {
-      let b1 = false
-      for (const p2 of ps2) {
-        b1 = b1 || posEquall(p1, p2)
-      }
-      res = b1 && res
-    }
-  } else res = false
-
+  if (ps1.length !== ps2.length) return false
+  ps1.forEach((p1) => {
+    let b1 = false
+    ps2.forEach((p2) => {
+      b1 = b1 || posEquall(p1, p2)
+    })
+    res = b1 && res
+  })
   return res
 }
 
