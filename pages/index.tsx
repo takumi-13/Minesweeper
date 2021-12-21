@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
-import { Board, BoardFrame } from '../components/board'
+import { BoardFrame } from '../components/board'
 import { BoardHead } from '../components/boardHead'
-import { BoardMain } from '../components/boardMain'
+import { BoardContent } from '../components/boardMain'
 import { Container, Main } from '../components/page'
 import type { Pos, Values } from '../types/type'
 import { calBom, createBom } from '../utils/bom'
@@ -151,27 +151,6 @@ const Home: NextPage = () => {
     applyBoard(newBoard, newPositions)
   }
 
-  const BoardContent = () => {
-    return (
-      <Board>
-        {board.map((row, y) =>
-          row.map((num, x) => (
-            <BoardMain
-              states={states}
-              vars={{ x, y, num, boms }}
-              funs={{ onClick, onContextMenu }}
-              key={`${x}-${y}`}
-            />
-          ))
-        )}
-      </Board>
-    )
-  }
-
-  const BoardHeader = () => {
-    return <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
-  }
-
   return (
     <Container>
       <Head>
@@ -182,8 +161,8 @@ const Home: NextPage = () => {
 
       <Main>
         <BoardFrame>
-          <BoardHeader />
-          <BoardContent />
+          <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
+          <BoardContent states={states} vars={{ boms }} funs={{ onClick, onContextMenu }} />
         </BoardFrame>
       </Main>
     </Container>

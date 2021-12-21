@@ -23,6 +23,9 @@ export const createBom = (bomNum: number): Pos[] => {
 
 export const calBom = (x: number, y: number, boms: Pos[]) => {
   let calNum = 0
-  boms.forEach((elm) => Math.abs(elm.x - x) in [0, 1] && Math.abs(y - elm.y) in [0, 1] && calNum++)
+  boms.forEach(
+    (elm) =>
+      [0, 1].includes(Math.abs(elm.x - x)) && [0, 1].includes(Math.abs(y - elm.y)) && calNum++
+  )
   return calNum
 }

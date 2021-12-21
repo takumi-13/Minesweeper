@@ -101,7 +101,7 @@ export const UpdatePosition = class {
 }
 
 const checkInBoard = (vs: Values): boolean => {
-  return vs.x in [0, 1, 2, 3, 4, 5, 6, 7, 8] && vs.y in [0, 1, 2, 3, 4, 5, 6, 7, 8]
+  return [0, 1, 2, 3, 4, 5, 6, 7, 8].includes(vs.x) && [0, 1, 2, 3, 4, 5, 6, 7, 8].includes(vs.y)
 }
 
 const checkCanPush = (vs: Values, newboard: number[][]): boolean => {

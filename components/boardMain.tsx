@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Pos } from '../types/type'
 import { BomBlock, FlagBlock, HatenaBlock, PushedBlock, UnPushedBlock } from './board'
+import { Board } from './boardStyle'
 
 type MyStates = {
   gameState: number
@@ -9,25 +10,53 @@ type MyStates = {
   count: number
 }
 
-type MyVars = {
+type MainVars = {
   x: number
   y: number
   boms: Pos[]
   num: number
 }
+
+type ContentVars = {
+  boms: Pos[]
+}
+
 type ClickAction = (a: number, b: number) => void
 type MyFuns = {
   onClick: ClickAction
   onContextMenu: ClickAction
 }
 
-type Props = {
+type BoardContentProps = {
   states: MyStates
-  vars: MyVars
+  vars: ContentVars
   funs: MyFuns
 }
 
-export const BoardMain: React.FC<Props> = ({ states, vars, funs }) => {
+type BoardMainProps = {
+  states: MyStates
+  vars: MainVars
+  funs: MyFuns
+}
+
+export const BoardContent: React.FC<BoardContentProps> = ({ states, vars, funs }) => {
+  return (
+    <Board>
+      {states.board.map((row, y) =>
+        row.map((num, x) => (
+          <BoardMain
+            states={states}
+            vars={{ x, y, boms: vars.boms, num }}
+            funs={funs}
+            key={`${x}-${y}`}
+          />
+        ))
+      )}
+    </Board>
+  )
+}
+
+const BoardMain: React.FC<BoardMainProps> = ({ states, vars, funs }) => {
   const gameState = states.gameState
   const flgPosition = states.flgPosition
 
