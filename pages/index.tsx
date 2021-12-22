@@ -9,7 +9,7 @@ import type { Pos, Values } from '../types/type'
 import { calBom, createBom } from '../utils/bom'
 import { FIRST_STATE } from '../utils/firstState'
 import { posArrayEquall, posEquall } from '../utils/position'
-import { UpdatePosition } from '../utils/updatePosition'
+import { updatePosition } from '../utils/updatePosition'
 
 let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
@@ -142,11 +142,14 @@ const Home: NextPage = () => {
       applyBoard(newBoard, newPositions)
       return
     }
-    const newNum = calBom(posX, posY, boms)
-    const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
-    updatePosition.makeNewBoard(newNum, posX, posY)
-    const newPositions = updatePosition.getNewPositions
-    pushedBlockNum = updatePosition.pushedBlockNum
+    const newNum: number = calBom(posX, posY, boms)
+    const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY)
+
+    pushedBlockNum += newPositions.length
+    // const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
+    // updatePosition.makeNewBoard(newNum, posX, posY)
+    // const newPositions = updatePosition.getNewPositions
+    //pushedBlockNum = updatePosition.pushedBlockNum
     judgePushAllBlocks(newPositions)
     applyBoard(newBoard, newPositions)
   }
