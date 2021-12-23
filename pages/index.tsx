@@ -73,21 +73,7 @@ const Home: NextPage = () => {
 
   const onContextMenu = (posX: number, posY: number) => {
     checkGameStart()
-    const removeFlgPosition = (flg: Pos) => {
-      const res = [...flgPosition]
-      let count = 0
-      let index = 0
-      let isFind = false
-      res.flatMap((element) => {
-        if (posEquall(element, flg)) {
-          index = count
-          isFind = true
-        }
-        count += 1
-      })
-      isFind && res.splice(index, 1)
-      return res
-    }
+    const removeFlgPosition = (flg: Pos) => [...flgPosition].filter((el) => !posEquall(el, flg))
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     const newFlgPosition: Pos = { x: posX, y: posY }
     const isFlg = board[posY][posX] === 99
@@ -113,32 +99,27 @@ const Home: NextPage = () => {
       return
     }
     setGameClear()
-    const newFlgPosition: Pos[] = []
-    boms.flatMap((el) => {
-      newPositions.push({ x: el.x, y: el.y, value: 99 })
-      newFlgPosition.push({ x: el.x, y: el.y })
-    })
+    const newPosition: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: 99 }))
+    const newFlgPosition: Pos[] = boms.map((el) => ({ x: el.x, y: el.y }))
     setFlgPosition(newFlgPosition)
+    const res: Values[] = [...newPosition, ...newPositions]
+    return res
   }
 
   const applyBoard = (board: number[][], res: Values[]) => {
-    res.flatMap((element) => {
+    for (const element of res) {
       board[element.y][element.x] = element.value
-    })
+    }
     setBoard(board)
   }
 
   const onClick = (posX: number, posY: number) => {
     checkGameStart()
-    let isBom = false
-    boms.flatMap((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
+    const isBom = boms.find((el) => posEquall({ x: posX, y: posY }, el)) !== undefined
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
-      const newPositions: Values[] = []
-      boms.flatMap((el) => {
-        newPositions.push({ x: el.x, y: el.y, value: -1 })
-      })
+      const newPositions: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: -1 }))
       setGameover()
       applyBoard(newBoard, newPositions)
       return
