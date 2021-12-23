@@ -21,11 +21,7 @@ export const createBom = (bomNum: number): Pos[] => {
   return res
 }
 
-export const calBom = (x: number, y: number, boms: Pos[]) => {
-  let calNum = 0
-  boms.flatMap(
-    (elm) =>
-      [0, 1].includes(Math.abs(elm.x - x)) && [0, 1].includes(Math.abs(y - elm.y)) && calNum++
-  )
-  return calNum
-}
+export const calBom = (x: number, y: number, boms: Pos[]): number =>
+  boms
+    .map((elm) => [elm.x - x, elm.y - y].map(Math.abs))
+    .filter((vals) => vals.every((v) => [0, 1].includes(v))).length

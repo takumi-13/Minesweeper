@@ -115,9 +115,7 @@ const checkDoPush = (vs: Values, newboard: number[][], reachedPositions: Pos[]):
   const isReached = checkReached(vs, reachedPositions)
   return canPush && !isReached
 }
-const checkInBoard = (vs: Values): boolean => {
-  return [0, 1, 2, 3, 4, 5, 6, 7, 8].includes(vs.x) && [0, 1, 2, 3, 4, 5, 6, 7, 8].includes(vs.y)
-}
+const checkInBoard = (vs: Values): boolean => [vs.x, vs.y].every((val) => 0 <= val && val <= 8)
 
 const checkCanPush = (vs: Values, newboard: number[][]): boolean => {
   const isInboard = checkInBoard(vs)
