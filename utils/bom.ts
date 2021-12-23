@@ -9,7 +9,7 @@ export const createBom = (bomNum: number): Pos[] => {
   }
   const res: Pos[] = []
   const nums: number[] = [...Array(bomNum)].map((v, i) => i)
-  nums.forEach(() => {
+  nums.flatMap(() => {
     let pos: Pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
     let isIncludePos = isPosInclude(pos, res)
     while (isIncludePos) {
@@ -23,7 +23,7 @@ export const createBom = (bomNum: number): Pos[] => {
 
 export const calBom = (x: number, y: number, boms: Pos[]) => {
   let calNum = 0
-  boms.forEach(
+  boms.flatMap(
     (elm) =>
       [0, 1].includes(Math.abs(elm.x - x)) && [0, 1].includes(Math.abs(y - elm.y)) && calNum++
   )

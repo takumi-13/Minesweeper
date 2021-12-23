@@ -78,7 +78,7 @@ const Home: NextPage = () => {
       let count = 0
       let index = 0
       let isFind = false
-      res.forEach((element) => {
+      res.flatMap((element) => {
         if (posEquall(element, flg)) {
           index = count
           isFind = true
@@ -109,19 +109,20 @@ const Home: NextPage = () => {
     setBoard(newBoard)
   }
   const judgePushAllBlocks = (newPositions: Values[]) => {
-    if (pushedBlockNum === board.length ** 2 - boms.length) {
-      setGameClear()
-      const newFlgPosition: Pos[] = []
-      boms.forEach((el) => {
-        newPositions.push({ x: el.x, y: el.y, value: 99 })
-        newFlgPosition.push({ x: el.x, y: el.y })
-      })
-      setFlgPosition(newFlgPosition)
+    if (pushedBlockNum !== board.length ** 2 - boms.length) {
+      return
     }
+    setGameClear()
+    const newFlgPosition: Pos[] = []
+    boms.flatMap((el) => {
+      newPositions.push({ x: el.x, y: el.y, value: 99 })
+      newFlgPosition.push({ x: el.x, y: el.y })
+    })
+    setFlgPosition(newFlgPosition)
   }
 
   const applyBoard = (board: number[][], res: Values[]) => {
-    res.forEach((element) => {
+    res.flatMap((element) => {
       board[element.y][element.x] = element.value
     })
     setBoard(board)
@@ -130,12 +131,12 @@ const Home: NextPage = () => {
   const onClick = (posX: number, posY: number) => {
     checkGameStart()
     let isBom = false
-    boms.forEach((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
+    boms.flatMap((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
       const newPositions: Values[] = []
-      boms.forEach((el) => {
+      boms.flatMap((el) => {
         newPositions.push({ x: el.x, y: el.y, value: -1 })
       })
       setGameover()
@@ -146,10 +147,6 @@ const Home: NextPage = () => {
     const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY)
 
     pushedBlockNum += newPositions.length
-    // const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
-    // updatePosition.makeNewBoard(newNum, posX, posY)
-    // const newPositions = updatePosition.getNewPositions
-    //pushedBlockNum = updatePosition.pushedBlockNum
     judgePushAllBlocks(newPositions)
     applyBoard(newBoard, newPositions)
   }
