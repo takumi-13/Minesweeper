@@ -3,16 +3,10 @@ import type { Pos } from '../types/type'
 export const createBom = (bomNum: number): Pos[] => {
   const res: Pos[] = []
   while (res.length < bomNum) {
-    makeNotDuplicatedBoms(res)
+    const pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
+    !res.some((p) => p.x === pos.x && p.y === pos.y) && res.push(pos)
   }
   return res
-}
-
-const makeNotDuplicatedBoms = (res: Pos[]) => {
-  const pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-  if (!res.some((p) => p.x === pos.x && p.y === pos.y)) {
-    res.push(pos)
-  }
 }
 
 const getRandomInt = (min: number, max: number) => {

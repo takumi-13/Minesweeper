@@ -96,7 +96,7 @@ const Home: NextPage = () => {
   }
   const judgePushAllBlocks = (newPositions: Values[]) => {
     if (pushedBlockNum !== board.length ** 2 - boms.length) {
-      return
+      return newPositions
     }
     setGameClear()
     const newPosition: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: 99 }))
@@ -128,8 +128,7 @@ const Home: NextPage = () => {
     const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY)
 
     pushedBlockNum += newPositions.length
-    judgePushAllBlocks(newPositions)
-    applyBoard(newBoard, newPositions)
+    applyBoard(newBoard, judgePushAllBlocks(newPositions))
   }
 
   return (
