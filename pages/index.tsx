@@ -1,15 +1,15 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
-import { Board, BoardFrame } from '../components/board'
+import { BoardFrame } from '../components/board'
 import { BoardHead } from '../components/boardHead'
-import { BoardMain } from '../components/boardMain'
+import { BoardContent } from '../components/boardMain'
 import { Container, Main } from '../components/page'
 import type { Pos, Values } from '../types/type'
 import { calBom, createBom } from '../utils/bom'
 import { FIRST_STATE } from '../utils/firstState'
 import { posArrayEquall, posEquall } from '../utils/position'
-import { UpdatePosition } from '../utils/updatePosition'
+import { updatePosition } from '../utils/updatePosition'
 
 let boms: Pos[] = createBom(10)
 let pushedBlockNum = 0
@@ -73,21 +73,7 @@ const Home: NextPage = () => {
 
   const onContextMenu = (posX: number, posY: number) => {
     checkGameStart()
-    const removeFlgPosition = (flg: Pos) => {
-      const res = [...flgPosition]
-      let count = 0
-      let index = 0
-      let isFind = false
-      res.forEach((element) => {
-        if (posEquall(element, flg)) {
-          index = count
-          isFind = true
-        }
-        count += 1
-      })
-      isFind && res.splice(index, 1)
-      return res
-    }
+    const removeFlgPosition = (flg: Pos) => [...flgPosition].filter((el) => !posEquall(el, flg))
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     const newFlgPosition: Pos = { x: posX, y: posY }
     const isFlg = board[posY][posX] === 99
@@ -109,67 +95,40 @@ const Home: NextPage = () => {
     setBoard(newBoard)
   }
   const judgePushAllBlocks = (newPositions: Values[]) => {
-    if (pushedBlockNum === board.length ** 2 - boms.length) {
-      setGameClear()
-      const newFlgPosition: Pos[] = []
-      boms.forEach((el) => {
-        newPositions.push({ x: el.x, y: el.y, value: 99 })
-        newFlgPosition.push({ x: el.x, y: el.y })
-      })
-      setFlgPosition(newFlgPosition)
+    if (pushedBlockNum !== board.length ** 2 - boms.length) {
+      return newPositions
     }
+    setGameClear()
+    const newPosition: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: 99 }))
+    const newFlgPosition: Pos[] = boms.map((el) => ({ x: el.x, y: el.y }))
+    setFlgPosition(newFlgPosition)
+    const res: Values[] = [...newPosition, ...newPositions]
+    return res
   }
 
-  const applyBoard = (board: number[][], res: Values[]) => {
+  const applyBoard = (newBoard: number[][], res: Values[]) => {
     res.forEach((element) => {
-      board[element.y][element.x] = element.value
+      newBoard[element.y][element.x] = element.value
     })
-    setBoard(board)
+    setBoard(newBoard)
   }
 
   const onClick = (posX: number, posY: number) => {
     checkGameStart()
-    let isBom = false
-    boms.forEach((element) => (isBom = isBom || (element.x === posX && element.y === posY)))
+    const isBom = boms.some((el) => posEquall({ x: posX, y: posY }, el))
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {
-      const newPositions: Values[] = []
-      boms.forEach((el) => {
-        newPositions.push({ x: el.x, y: el.y, value: -1 })
-      })
+      const newPositions: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: -1 }))
       setGameover()
       applyBoard(newBoard, newPositions)
       return
     }
-    const newNum = calBom(posX, posY, boms)
-    const updatePosition = new UpdatePosition(pushedBlockNum, board, boms)
-    updatePosition.makeNewBoard(newNum, posX, posY)
-    const newPositions = updatePosition.getNewPositions
-    pushedBlockNum = updatePosition.pushedBlockNum
-    judgePushAllBlocks(newPositions)
-    applyBoard(newBoard, newPositions)
-  }
+    const newNum: number = calBom(posX, posY, boms)
+    const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY)
 
-  const BoardContent = () => {
-    return (
-      <Board>
-        {board.map((row, y) =>
-          row.map((num, x) => (
-            <BoardMain
-              states={states}
-              vars={{ x, y, num, boms }}
-              funs={{ onClick, onContextMenu }}
-              key={`${x}-${y}`}
-            />
-          ))
-        )}
-      </Board>
-    )
-  }
-
-  const BoardHeader = () => {
-    return <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
+    pushedBlockNum += newPositions.length
+    applyBoard(newBoard, judgePushAllBlocks(newPositions))
   }
 
   return (
@@ -182,8 +141,8 @@ const Home: NextPage = () => {
 
       <Main>
         <BoardFrame>
-          <BoardHeader />
-          <BoardContent />
+          <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
+          <BoardContent states={states} vars={{ boms }} funs={{ onClick, onContextMenu }} />
         </BoardFrame>
       </Main>
     </Container>
