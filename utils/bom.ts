@@ -1,24 +1,18 @@
 import type { Pos } from '../types/type'
-import { isPosInclude } from './position'
 
 export const createBom = (bomNum: number): Pos[] => {
   const res: Pos[] = []
-  //const nums: number[] = [...Array(bomNum)].map((v, i) => i)
-  for (let i = 0; i < bomNum; i++) {
-    const pos = removeDuplicate(res)
-    res.push(pos)
+  while (res.length < bomNum) {
+    makeNotDuplicatedBoms(res)
   }
   return res
 }
 
-const removeDuplicate = (res: Pos[]) => {
-  let pos: Pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-  let isIncludePos = isPosInclude(pos, res)
-  while (isIncludePos) {
-    pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
-    isIncludePos = isPosInclude(pos, res)
+const makeNotDuplicatedBoms = (res: Pos[]) => {
+  const pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
+  if (!res.some((p) => p.x === pos.x && p.y === pos.y)) {
+    res.push(pos)
   }
-  return pos
 }
 
 const getRandomInt = (min: number, max: number) => {

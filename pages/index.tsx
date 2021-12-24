@@ -106,16 +106,16 @@ const Home: NextPage = () => {
     return res
   }
 
-  const applyBoard = (board: number[][], res: Values[]) => {
-    for (const element of res) {
-      board[element.y][element.x] = element.value
-    }
-    setBoard(board)
+  const applyBoard = (newBoard: number[][], res: Values[]) => {
+    res.forEach((element) => {
+      newBoard[element.y][element.x] = element.value
+    })
+    setBoard(newBoard)
   }
 
   const onClick = (posX: number, posY: number) => {
     checkGameStart()
-    const isBom = boms.find((el) => posEquall({ x: posX, y: posY }, el)) !== undefined
+    const isBom = boms.some((el) => posEquall({ x: posX, y: posY }, el))
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     if (isBom) {

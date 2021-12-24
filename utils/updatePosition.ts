@@ -44,54 +44,25 @@ const updateNewPosition = (
     return
   }
 
-  updateNewPosition(
-    { x: vs.x, y: vs.y + 1, value: calBom(vs.x, vs.y + 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x, y: vs.y - 1, value: calBom(vs.x, vs.y - 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x + 1, y: vs.y, value: calBom(vs.x + 1, vs.y, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x - 1, y: vs.y, value: calBom(vs.x - 1, vs.y, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x + 1, y: vs.y + 1, value: calBom(vs.x + 1, vs.y + 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x - 1, y: vs.y + 1, value: calBom(vs.x - 1, vs.y + 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x + 1, y: vs.y - 1, value: calBom(vs.x + 1, vs.y - 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
-  updateNewPosition(
-    { x: vs.x - 1, y: vs.y - 1, value: calBom(vs.x - 1, vs.y - 1, boms) },
-    newboard,
-    boms,
-    reachedPositions
-  )
+  const dirTemp1 = [-1, 0, 1]
+  const dirTemp2 = [-1, 0, 1]
+  const directions = dirTemp1
+    .map((el1) => dirTemp2.map((el2) => [el1, el2]))
+    .reduce((newArr, elem) => {
+      const res = elem.filter((item) => JSON.stringify(item) !== '[0,0]')
+      return newArr.concat(res)
+    }, [])
+
+  for (const direction of directions) {
+    const xValue = vs.x + direction[0]
+    const yValue = vs.y + direction[1]
+    updateNewPosition(
+      { x: xValue, y: yValue, value: calBom(xValue, yValue, boms) },
+      newboard,
+      boms,
+      reachedPositions
+    )
+  }
 }
 
 const makeNewBoard = (
