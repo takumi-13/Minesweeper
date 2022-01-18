@@ -1,42 +1,57 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
-import { BoardFrame } from '../components/board'
-import { BoardHead } from '../components/boardHead'
-import { BoardContent } from '../components/boardMain'
+import { BoardOrigin } from '../components/boardOrigin'
+import { DifficultySelector } from '../components/difficultySelector'
 import { Container, Main } from '../components/page'
-import type { Pos, Values } from '../types/type'
-import { calBom, createBom } from '../utils/bom'
-import { FIRST_STATE } from '../utils/firstState'
-import { posArrayEquall, posEquall } from '../utils/position'
-import { updatePosition } from '../utils/updatePosition'
-
-let boms: Pos[] = createBom(10)
-let pushedBlockNum = 0
+import { BoardSize, DifficultyFirstStates, Pos } from '../types/type'
+import { createBom } from '../utils/bom'
+import { FIRST_STATE_COMMON, FIRST_STATE_EASY } from '../utils/firstState'
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
-  //Stateの初期化
+
+  const [nowFirstState, setNowFirstState] = useState<DifficultyFirstStates>(FIRST_STATE_EASY)
+
+  const refreshStateWithDifficulty = (values: DifficultyFirstStates) => {
+    refreshStateCommon()
+    setNowFirstState(values)
+    setBoardSize({ sizeX: values.sizeX, sizeY: values.sizeY })
+    setBoard(values.board)
+    setBoms(createBom(values.bomNum, values.sizeX, values.sizeY))
+  }
+
   const refreshState = () => {
-    setGameState(FIRST_STATE.gameState)
-    setBoard(FIRST_STATE.board)
-    setFlgPosition(FIRST_STATE.flgPosition)
-    setCount(FIRST_STATE.count)
-    pushedBlockNum = 0
-    boms = createBom(10)
+    refreshStateCommon()
+    setBoardSize({ sizeX: nowFirstState.sizeX, sizeY: nowFirstState.sizeY })
+    setBoard(nowFirstState.board)
+    setBoms(createBom(nowFirstState.bomNum, nowFirstState.sizeX, nowFirstState.sizeY))
+  }
+
+  const refreshStateCommon = () => {
+    setGameState(FIRST_STATE_COMMON.gameState)
+    setFlgPosition(FIRST_STATE_COMMON.flgPosition)
+    setCount(FIRST_STATE_COMMON.count)
+    setPushedBlockNum(0)
     countStop()
   }
   //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
-  const [gameState, setGameState] = useState(FIRST_STATE.gameState)
+  const [gameState, setGameState] = useState(FIRST_STATE_COMMON.gameState)
 
   // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
-  const [board, setBoard] = useState(FIRST_STATE.board)
+  const [board, setBoard] = useState(nowFirstState.board)
+  const [flgPosition, setFlgPosition] = useState<Pos[]>(FIRST_STATE_COMMON.flgPosition)
+  const [count, setCount] = useState(FIRST_STATE_COMMON.count)
+  const [boms, setBoms] = useState(
+    createBom(nowFirstState.bomNum, nowFirstState.sizeX, nowFirstState.sizeY)
+  )
+  const [pushedBlockNum, setPushedBlockNum] = useState(0)
+  const [boardSize, setBoardSize] = useState<BoardSize>({
+    sizeX: nowFirstState.sizeX,
+    sizeY: nowFirstState.sizeY,
+  })
 
-  const [flgPosition, setFlgPosition] = useState<Pos[]>(FIRST_STATE.flgPosition)
-
-  const [count, setCount] = useState(FIRST_STATE.count)
-
-  const states = { gameState, board, flgPosition, count }
+  const states = { gameState, board, flgPosition, count, boms, pushedBlockNum, boardSize }
 
   const intervalRef = useRef<number | null>(null)
   const countStart = useCallback(() => {
@@ -71,68 +86,8 @@ const Home: NextPage = () => {
     }
   }
 
-  const onContextMenu = (posX: number, posY: number) => {
-    checkGameStart()
-    const removeFlgPosition = (flg: Pos) => [...flgPosition].filter((el) => !posEquall(el, flg))
-    const newBoard: typeof board = JSON.parse(JSON.stringify(board))
-    const newFlgPosition: Pos = { x: posX, y: posY }
-    const isFlg = board[posY][posX] === 99
-    const isHatena = board[posY][posX] === 100
-
-    let newFlgPositions: Pos[] = []
-    if (isFlg) {
-      newBoard[posY][posX] = 9
-      newFlgPositions = removeFlgPosition(newFlgPosition)
-    } else if (isHatena) {
-      newBoard[posY][posX] = 99
-      newFlgPositions = [...flgPosition, newFlgPosition]
-    } else {
-      newBoard[posY][posX] = 100
-      newFlgPositions = removeFlgPosition(newFlgPosition)
-    }
-    posArrayEquall(newFlgPositions, boms) ? setGameClear() : setGameState(0)
-    setFlgPosition(newFlgPositions)
-    setBoard(newBoard)
-  }
-  const judgePushAllBlocks = (newPositions: Values[]) => {
-    if (pushedBlockNum !== board.length ** 2 - boms.length) {
-      return newPositions
-    }
-    setGameClear()
-    const newPosition: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: 99 }))
-    const newFlgPosition: Pos[] = boms.map((el) => ({ x: el.x, y: el.y }))
-    setFlgPosition(newFlgPosition)
-    const res: Values[] = [...newPosition, ...newPositions]
-    return res
-  }
-
-  const applyBoard = (newBoard: number[][], res: Values[]) => {
-    res.forEach((element) => {
-      newBoard[element.y][element.x] = element.value
-    })
-    setBoard(newBoard)
-  }
-
-  const onClick = (posX: number, posY: number) => {
-    checkGameStart()
-    const isBom = boms.some((el) => posEquall({ x: posX, y: posY }, el))
-
-    const newBoard: typeof board = JSON.parse(JSON.stringify(board))
-    if (isBom) {
-      const newPositions: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: -1 }))
-      setGameover()
-      applyBoard(newBoard, newPositions)
-      return
-    }
-    const newNum: number = calBom(posX, posY, boms)
-    const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY)
-
-    pushedBlockNum += newPositions.length
-    applyBoard(newBoard, judgePushAllBlocks(newPositions))
-  }
-
   return (
-    <Container>
+    <Container boardSize={boardSize}>
       <Head>
         <title>Create Next App</title>
         <meta name="description" content="Generated by create next app" />
@@ -140,10 +95,25 @@ const Home: NextPage = () => {
       </Head>
 
       <Main>
-        <BoardFrame>
-          <BoardHead states={states} vars={{ boms }} funs={{ refreshState }} />
-          <BoardContent states={states} vars={{ boms }} funs={{ onClick, onContextMenu }} />
-        </BoardFrame>
+        <DifficultySelector
+          states={{ boardSize, boms, nowFirstState }}
+          funs={{
+            refreshStateWithDifficulty,
+          }}
+        />
+        <BoardOrigin
+          parentStates={states}
+          funs={{
+            refreshState,
+            checkGameStart,
+            setGameover,
+            setGameClear,
+            setGameState,
+            setPushedBlockNum,
+            setFlgPosition,
+            setBoard,
+          }}
+        />
       </Main>
     </Container>
   )

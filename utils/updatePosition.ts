@@ -1,4 +1,4 @@
-import type { Pos, Values } from '../types/type'
+import type { BoardSize, Pos, Values } from '../types/type'
 import { calBom } from './bom'
 import { posEquall } from './position'
 
@@ -9,10 +9,11 @@ export const updatePosition = (
   boms: Pos[],
   newNum: number,
   posX: number,
-  posY: number
+  posY: number,
+  boardSize: BoardSize
 ): Values[] => {
   newMadePositions = []
-  return makeNewBoard(newNum, posX, posY, board, boms)
+  return makeNewBoard(newNum, posX, posY, board, boms, boardSize)
 }
 
 const checkReached = (vs: Values, reachedPositions: Pos[]): boolean => {
@@ -28,12 +29,13 @@ const updateNewPosition = (
   vs: Values,
   newboard: number[][],
   boms: Pos[],
-  reachedPositions: Pos[]
+  reachedPositions: Pos[],
+  boardSize: BoardSize
 ) => {
   //訪れたことのないブロックの場合再帰処理
   const isNotZero = checkZero(vs)
 
-  const doPush = checkDoPush(vs, newboard, reachedPositions)
+  const doPush = checkDoPush(vs, newboard, reachedPositions, boardSize)
 
   const isNotRecursive = checkNotRecursive(isNotZero, doPush)
 
@@ -60,7 +62,8 @@ const updateNewPosition = (
       { x: xValue, y: yValue, value: calBom(xValue, yValue, boms) },
       newboard,
       boms,
-      reachedPositions
+      reachedPositions,
+      boardSize
     )
   }
 }
@@ -70,26 +73,34 @@ const makeNewBoard = (
   posX: number,
   posY: number,
   board: number[][],
-  boms: Pos[]
+  boms: Pos[],
+  boardSize: BoardSize
 ): Values[] => {
   if (0 < newNum && newNum < 9) {
     const newPositions = [{ x: posX, y: posY, value: newNum }]
     return newPositions
   } else {
-    updateNewPosition({ x: posX, y: posY, value: newNum }, board, boms, [])
+    updateNewPosition({ x: posX, y: posY, value: newNum }, board, boms, [], boardSize)
     return newMadePositions
   }
 }
 
-const checkDoPush = (vs: Values, newboard: number[][], reachedPositions: Pos[]): boolean => {
-  const canPush = checkCanPush(vs, newboard)
+const checkDoPush = (
+  vs: Values,
+  newboard: number[][],
+  reachedPositions: Pos[],
+  boardSize: BoardSize
+): boolean => {
+  const canPush = checkCanPush(vs, newboard, boardSize)
   const isReached = checkReached(vs, reachedPositions)
   return canPush && !isReached
 }
-const checkInBoard = (vs: Values): boolean => [vs.x, vs.y].every((val) => 0 <= val && val <= 8)
-
-const checkCanPush = (vs: Values, newboard: number[][]): boolean => {
-  const isInboard = checkInBoard(vs)
+const checkInBoard = (vs: Values, boardSize: BoardSize): boolean => {
+  return 0 <= vs.x && vs.x <= boardSize.sizeX - 1 && 0 <= vs.y && vs.y <= boardSize.sizeY - 1
+}
+//[vs.x, vs.y].every((val) => 0 <= val && val <= 8)
+const checkCanPush = (vs: Values, newboard: number[][], boardSize: BoardSize): boolean => {
+  const isInboard = checkInBoard(vs, boardSize)
   let isUnPushed = true
   if (isInboard) {
     isUnPushed = newboard[vs.y][vs.x] === 9
