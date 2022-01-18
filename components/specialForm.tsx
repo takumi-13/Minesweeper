@@ -6,7 +6,7 @@ import { FIRST_STATE_SPECIAL } from '../utils/firstState'
 const StyledInput = styled.input`
   width: 4em;
 `
-export const SpecialForm: React.FC<SpecialFormProps> = ({ states, funs }) => {
+export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {
   const [inputSizeX, setInputSizeX] = React.useState(FIRST_STATE_SPECIAL.sizeX)
   const [inputSizeY, setInputSizeY] = React.useState(FIRST_STATE_SPECIAL.sizeY)
   const [inputBomNum, setInputBomNum] = React.useState(FIRST_STATE_SPECIAL.bomNum)

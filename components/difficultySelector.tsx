@@ -20,7 +20,6 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, 
       <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_DIFFICULT)}>上級</button>
       <button onClick={() => funs.refreshStateWithDifficulty(specialFirstState)}>スペシャル</button>
       <SpecialForm
-        states={{ boardSize: states.boardSize, boms: states.boms }}
         funs={{ refreshStateWithDifficulty: funs.refreshStateWithDifficulty, setSpecialFirstState }}
       />
     </div>

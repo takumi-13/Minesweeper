@@ -3,10 +3,12 @@ import { BoardContentProps, BoardMainProps, PushedBlockProps } from '../types/bo
 import { Board, BomBlock, FlagBlock, HatenaBlock, PushedBlock, UnPushedBlock } from './boardStyle'
 
 export const BoardContent: React.FC<BoardContentProps> = ({ states, funs }) => {
-  const sizeX = states.boardSize.sizeX
-  const sizeY = states.boardSize.sizeY
+  const tmpBoardSize = {
+    sizex: states.boardSize.sizeX,
+    sizey: states.boardSize.sizeY,
+  }
   return (
-    <Board blockNumX={sizeX} blockNumY={sizeY}>
+    <Board boardsize={tmpBoardSize}>
       {states.board.map((row, y) =>
         row.map((num, x) => (
           <BoardMain states={states} vars={{ x, y, num }} funs={funs} key={`${x}-${y}`} />
