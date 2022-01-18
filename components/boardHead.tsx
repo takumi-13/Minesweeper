@@ -3,10 +3,12 @@ import { BoardHeadProps } from '../types/board/header'
 import { BoardHeader, FaceIcon, FlagNum, TimerNum } from './boardStyle'
 
 export const BoardHead: React.FC<BoardHeadProps> = ({ states, funs }) => {
-  const sizeX = states.boardSize.sizeX
-  const sizeY = states.boardSize.sizeY
+  const tmpBoardSize = {
+    sizex: states.boardSize.sizeX,
+    sizey: states.boardSize.sizeY,
+  }
   return (
-    <BoardHeader blockNumX={sizeX} blockNumY={sizeY}>
+    <BoardHeader boardsize={tmpBoardSize}>
       <FlagNum>{`000${states.boms.length - states.flgPosition.length}`.slice(-3)}</FlagNum>
       <FaceIcon
         number={decideNumber(states.gameState)}

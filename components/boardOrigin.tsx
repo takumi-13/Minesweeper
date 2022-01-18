@@ -83,8 +83,14 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     setPushedBlockNum(nowPushedBlockNum)
     applyBoard(newBoard, judgePushAllBlocks(newPositions, nowPushedBlockNum))
   }
+
+  const tmpBoardSize = {
+    sizex: boardSize.sizeX,
+    sizey: boardSize.sizeY,
+  }
+
   return (
-    <BoardFrame blockNumX={boardSize.sizeX} blockNumY={boardSize.sizeY}>
+    <BoardFrame boardsize={tmpBoardSize}>
       <BoardHead states={parentStates} funs={{ refreshState }} />
       <BoardContent states={parentStates} funs={{ onClick, onContextMenu }} />
     </BoardFrame>
