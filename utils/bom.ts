@@ -1,9 +1,9 @@
 import type { Pos } from '../types/type'
 
-export const createBom = (bomNum: number): Pos[] => {
+export const createBom = (bomNum: number, sizeX: number, sizeY: number): Pos[] => {
   const res: Pos[] = []
   while (res.length < bomNum) {
-    const pos = { x: getRandomInt(0, 8), y: getRandomInt(0, 8) }
+    const pos = { x: getRandomInt(0, sizeX), y: getRandomInt(0, sizeY) }
     !res.some((p) => p.x === pos.x && p.y === pos.y) && res.push(pos)
   }
   return res

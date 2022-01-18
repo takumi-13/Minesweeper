@@ -1,32 +1,20 @@
 import React from 'react'
-import type { Pos } from '../types/type'
-import { BoardHeader, FaceIcon, FlagNum, TimerNum } from './board'
-type MyStates = {
-  gameState: number
-  board: number[][]
-  flgPosition: Pos[]
-  count: number
-}
+import { BoardHeadProps } from '../types/board/header'
+import { BoardHeader, FaceIcon, FlagNum, TimerNum } from './boardStyle'
 
-type MyVars = {
-  boms: Pos[]
-}
-type ClickAction = () => void
-type MyFuns = {
-  refreshState: ClickAction
-}
-
-type Props = {
-  states: MyStates
-  vars: MyVars
-  funs: MyFuns
-}
-
-export const BoardHead: React.FC<Props> = ({ states, vars, funs }) => {
+export const BoardHead: React.FC<BoardHeadProps> = ({ states, funs }) => {
+  const tmpBoardSize = {
+    sizex: states.boardSize.sizeX,
+    sizey: states.boardSize.sizeY,
+  }
   return (
-    <BoardHeader>
-      <FlagNum>{`000${vars.boms.length - states.flgPosition.length}`.slice(-3)}</FlagNum>
-      <FaceIcon number={decideNumber(states.gameState)} onClick={() => funs.refreshState()}>
+    <BoardHeader boardsize={tmpBoardSize}>
+      <FlagNum>{`000${states.boms.length - states.flgPosition.length}`.slice(-3)}</FlagNum>
+      <FaceIcon
+        number={decideNumber(states.gameState)}
+        boardSize={states.boardSize}
+        onClick={() => funs.refreshState()}
+      >
         <a></a>
       </FaceIcon>
       <TimerNum>{`000${states.count}`.slice(-3)}</TimerNum>

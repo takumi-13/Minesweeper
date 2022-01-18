@@ -1,35 +1,48 @@
 import styled from 'styled-components'
-import type { PositionProps } from '../types/type'
+import type { BoardSizeProps, IconProps, PositionProps } from '../types/type'
 
-export const Board = styled.div`
+const defaultBoardSize = {
+  boardsize: {
+    sizex: 9,
+    sizey: 9,
+  },
+}
+
+export const Board = styled.div<BoardSizeProps>`
   position: relative;
   top: 0;
   left: 6px;
-  width: 470px;
-  height: 470px;
+  width: ${(props) => 20 + props.boardsize.sizex * 50}px;
+  height: ${(props) => 20 + props.boardsize.sizey * 50}px;
   margin: 10px 0;
   background-color: grey;
   border: inset 10px;
 `
+Board.defaultProps = defaultBoardSize
 
-export const BoardHead = styled.div`
+export const BoardHeader = styled.div<BoardSizeProps>`
   position: relative;
   top: 0;
   left: 6px;
-  width: 470px;
+  display: flex;
+  justify-content: space-between;
+  width: ${(props) => 20 + props.boardsize.sizex * 50}px;
   height: 90px;
   margin: 10px 0;
   overflow: hidden;
   background-color: grey;
   border: inset 10px;
 `
+BoardHeader.defaultProps = defaultBoardSize
 
-export const BoardFrame = styled.div`
-  width: 490px;
-  height: 600px;
+export const BoardFrame = styled.div<BoardSizeProps>`
+  width: ${(props) => 40 + props.boardsize.sizex * 50}px;
+  height: ${(props) => 130 + props.boardsize.sizey * 50}px;
   background-color: #d7d2d8;
   border: outset 6px;
 `
+BoardFrame.defaultProps = defaultBoardSize
+
 const Block = styled.div<PositionProps>`
   float: left;
   width: 50px;
@@ -70,13 +83,13 @@ export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -370px -4px;
 `
 
-export const FlagNum = styled.div`
+const NumIcon = styled.div`
+  display: flex;
+  align-content: space-between;
   float: left;
-  width: 100px;
-  height: 55px;
-  margin-top: 10px;
-  margin-right: 60px;
-  margin-left: 30px;
+  width: 1.6em;
+  height: 50px;
+  margin-top: 12px;
   font-family: monospace;
   font-size: 46px;
   color: red;
@@ -84,26 +97,21 @@ export const FlagNum = styled.div`
   vertical-align: middle;
   background-color: black;
 `
-export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
+
+export const FlagNum = styled(NumIcon)`
+  margin-right: 0;
+  margin-left: 30px;
+`
+export const FaceIcon = styled(UnPushedBlock)<IconProps>`
+  display: flex;
   float: left;
   margin-top: 12px;
-  margin-right: 20px;
   margin-bottom: 0;
-  margin-left: 15px;
   background-position: ${(props) => props.number} -4px;
   background-size: 605px 50px;
   border: outset 4px;
 `
-export const TimerNum = styled.div`
-  float: left;
-  width: 100px;
-  height: 55px;
-  margin-top: 10px;
-  margin-left: 50px;
-  font-family: monospace;
-  font-size: 46px;
-  color: red;
-  text-align: center;
-  vertical-align: middle;
-  background-color: black;
+export const TimerNum = styled(NumIcon)`
+  margin-right: 30px;
+  margin-left: 0;
 `
