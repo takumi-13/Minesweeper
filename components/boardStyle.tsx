@@ -10,36 +10,44 @@ const defaultBoardSize = {
 
 export const Board = styled.div<BoardSizeProps>`
   position: relative;
-  top: 0;
+  bottom: 1px;
   left: 6px;
   width: ${(props) => 20 + props.boardsize.sizex * 50}px;
   height: ${(props) => 20 + props.boardsize.sizey * 50}px;
-  margin: 10px 0;
-  background-color: grey;
-  border: inset 10px;
+  margin: 10px 2px;
+  background-color: #8a8a8a;
+  border: inset 10px white;
+  border-top-color: #c4c4c4;
+  border-left-color: #c4c4c4;
 `
 Board.defaultProps = defaultBoardSize
 
 export const BoardHeader = styled.div<BoardSizeProps>`
   position: relative;
-  top: 0;
   left: 6px;
   display: flex;
+  align-content: center;
   justify-content: space-between;
   width: ${(props) => 20 + props.boardsize.sizex * 50}px;
   height: 90px;
   margin: 10px 0;
   overflow: hidden;
-  background-color: grey;
-  border: inset 10px;
+  background-color: #c4c4c4;
+  border: inset 10px white;
+  border-top-color: #c4c4c4;
+  border-left-color: #c4c4c4;
 `
 BoardHeader.defaultProps = defaultBoardSize
 
 export const BoardFrame = styled.div<BoardSizeProps>`
-  width: ${(props) => 40 + props.boardsize.sizex * 50}px;
-  height: ${(props) => 130 + props.boardsize.sizey * 50}px;
-  background-color: #d7d2d8;
-  border: outset 6px;
+  width: ${(props) => 55 + props.boardsize.sizex * 50}px;
+  height: ${(props) => 160 + props.boardsize.sizey * 50}px;
+  background-color: #d4d4d4;
+  border: outset 10px;
+  border-top-color: white;
+  border-right-color: #c4c4c4;
+  border-bottom-color: #c4c4c4;
+  border-left-color: white;
 `
 BoardFrame.defaultProps = defaultBoardSize
 
@@ -47,10 +55,11 @@ const Block = styled.div<PositionProps>`
   float: left;
   width: 50px;
   height: 50px;
+  background-color: #d4d4d4;
   background-image: url(icons.png);
   background-repeat: no-repeat;
-  background-position: ${(props) => 45 - props.number * 45}px -4px;
-  background-size: 650px 55px;
+  background-position: ${(props) => 45 - props.number * 45}px 5px;
+  background-size: 650px 30px;
   border: 1px solid;
 `
 
@@ -59,59 +68,62 @@ Block.defaultProps = {
 }
 
 export const PushedBlock = styled(Block)<PositionProps>`
-  background-color: white;
-  border-color: black;
+  background-color: #c4c4c4;
+  border: inset 1px;
+  border-color: #8a8a8a;
 `
 
 export const UnPushedBlock = styled(Block)<PositionProps>`
   cursor: pointer;
-  border-color: white;
   :hover {
     border-bottom-color: transparent;
     transform: translateY(0.1875em);
   }
+
+  border: outset 6px;
+  border-color: white;
+  border-right-color: #c4c4c4;
+  border-bottom-color: #c4c4c4;
 `
 
 export const BomBlock = styled(Block)<PositionProps>`
   background-color: red;
-  background-position: -460px -4px;
+  background-position: -462px 10px;
 `
 export const FlagBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -415px -4px;
+  background-position: -420px 5px;
 `
 export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -370px -4px;
+  background-position: -375px 5px;
 `
 
 const NumIcon = styled.div`
   display: flex;
-  align-content: space-between;
   float: left;
-  width: 1.6em;
-  height: 50px;
-  margin-top: 12px;
+  width: 1.5em;
+  height: 1em;
+  margin-top: 14px;
   font-family: monospace;
   font-size: 46px;
   color: red;
   text-align: center;
-  vertical-align: middle;
+  vertical-align: baseline;
   background-color: black;
 `
 
 export const FlagNum = styled(NumIcon)`
   margin-right: 0;
-  margin-left: 30px;
+  margin-left: 20px;
 `
 export const FaceIcon = styled(UnPushedBlock)<IconProps>`
   display: flex;
   float: left;
   margin-top: 12px;
-  margin-bottom: 0;
-  background-position: ${(props) => props.number} -4px;
-  background-size: 605px 50px;
-  border: outset 4px;
+  background-position: ${(props) => 45 - props.number * 45}px 2px;
+  background-size: 603px 35px;
+  border: outset 6px;
 `
 export const TimerNum = styled(NumIcon)`
-  margin-right: 30px;
+  margin-right: 20px;
   margin-left: 0;
 `

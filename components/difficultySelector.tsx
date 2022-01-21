@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { DifficultySelectorProps } from '../types/difficultySelector/difficultySelector'
 import { DifficultyFirstStates } from '../types/type'
 import {
@@ -7,28 +8,54 @@ import {
   FIRST_STATE_MIDDLE,
   FIRST_STATE_SPECIAL,
 } from '../utils/firstState'
+import { DifficultyButton } from './difficultyButton'
 import { SpecialForm } from './specialForm'
+
+const DifficultySelectorDiv = styled.div`
+  margin: 0 auto;
+  margin-left: 1em;
+  zoom: 3;
+`
 
 export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, funs }) => {
   const [specialFirstState, setSpecialFirstState] =
     useState<DifficultyFirstStates>(FIRST_STATE_SPECIAL)
+  const refreshStateWithDifficulty = funs.refreshStateWithDifficulty
+  const isActive = {
+    easy: states.nowFirstState.difficulty === 'easy',
+    middle: states.nowFirstState.difficulty === 'middle',
+    difficult: states.nowFirstState.difficulty === 'difficult',
+    special: states.nowFirstState.difficulty === 'special',
+  }
+  const consts = {
+    easy: { displayName: '初級', firstState: FIRST_STATE_EASY, isActive: isActive.easy },
+    middle: { displayName: '中級', firstState: FIRST_STATE_MIDDLE, isActive: isActive.middle },
+    difficult: {
+      displayName: '上級',
+      firstState: FIRST_STATE_DIFFICULT,
+      isActive: isActive.difficult,
+    },
+    special: {
+      displayName: 'スペシャル',
+      firstState: specialFirstState,
+      isActive: isActive.special,
+    },
+  }
 
-  return states.nowFirstState.difficulty === 'special' ? (
-    <div>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_EASY)}>初級 </button>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_MIDDLE)}>中級 </button>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_DIFFICULT)}>上級</button>
-      <button onClick={() => funs.refreshStateWithDifficulty(specialFirstState)}>スペシャル</button>
-      <SpecialForm
-        funs={{ refreshStateWithDifficulty: funs.refreshStateWithDifficulty, setSpecialFirstState }}
-      />
-    </div>
+  return isActive.special ? (
+    <DifficultySelectorDiv>
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+      <SpecialForm funs={{ refreshStateWithDifficulty, setSpecialFirstState }} />
+    </DifficultySelectorDiv>
   ) : (
-    <div>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_EASY)}>初級 </button>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_MIDDLE)}>中級 </button>
-      <button onClick={() => funs.refreshStateWithDifficulty(FIRST_STATE_DIFFICULT)}>上級</button>
-      <button onClick={() => funs.refreshStateWithDifficulty(specialFirstState)}>スペシャル</button>
-    </div>
+    <DifficultySelectorDiv>
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
+      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+    </DifficultySelectorDiv>
   )
 }
