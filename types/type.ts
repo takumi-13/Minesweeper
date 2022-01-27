@@ -8,6 +8,11 @@ export type BoardSizeProps = {
     sizey: number
   }
 }
+
+export type BoardZoomProps = {
+  zoom: number
+}
+
 export type IconProps = {
   number: number
   boardSize: BoardSize

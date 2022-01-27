@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { BoardSizeProps } from '../types/type'
 
-export const Container = styled.div<BoardSizeProps>`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,7 +8,6 @@ export const Container = styled.div<BoardSizeProps>`
   height: 100vh;
   min-height: 100vh;
   padding: 0 0.5rem;
-  -moz-transform: ${(props) => 1 / props.boardsize.sizey + 2};
 `
 
 export const Main = styled.main`

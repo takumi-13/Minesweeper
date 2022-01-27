@@ -3,9 +3,32 @@ import styled from 'styled-components'
 import { SpecialFormProps } from '../types/difficultySelector/specialForm'
 import { makeFirstBoard } from '../utils/board'
 import { FIRST_STATE_SPECIAL } from '../utils/firstState'
+
 const StyledInput = styled.input`
   width: 4em;
+  margin-right: 1em;
+  font-size: 20px;
+  border: 2px solid #ddd;
 `
+const StyledButton = styled.button`
+  width: 4em;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: white;
+  :hover {
+    background-color: rgba(212, 212, 212, 0.4);
+  }
+`
+
+const StyledLabel = styled.label`
+  font-size: 20px;
+  font-weight: bold;
+`
+const StyledDiv = styled.div`
+  margin-left: 0.5em;
+`
+
 export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {
   const [inputSizeX, setInputSizeX] = React.useState(FIRST_STATE_SPECIAL.sizeX)
   const [inputSizeY, setInputSizeY] = React.useState(FIRST_STATE_SPECIAL.sizeY)
@@ -38,29 +61,29 @@ export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {
   }
 
   return (
-    <div>
-      <label htmlFor="sizeX">幅:</label>
+    <StyledDiv>
+      <StyledLabel htmlFor="sizeX">幅：</StyledLabel>
       <StyledInput
         type="number"
         defaultValue={FIRST_STATE_SPECIAL.sizeX}
         id="sizeX"
         onChange={(event) => changeInputSizeX(event)}
       />
-      <label htmlFor="sizeY">高さ:</label>
+      <StyledLabel htmlFor="sizeY">高さ：</StyledLabel>
       <StyledInput
         type="number"
         defaultValue={FIRST_STATE_SPECIAL.sizeY}
         id="sizeY"
         onChange={(event) => changeInputSizeY(event)}
       />
-      <label htmlFor="bomNum">マス:</label>
+      <StyledLabel htmlFor="bomNum">マス：</StyledLabel>
       <StyledInput
         type="number"
         defaultValue={FIRST_STATE_SPECIAL.bomNum}
         id="bomNum"
         onChange={(event) => changeInputBomNum(event)}
       />
-      <button onClick={() => applyChanges()}>更新 </button>
-    </div>
+      <StyledButton onClick={() => applyChanges()}>更新 </StyledButton>
+    </StyledDiv>
   )
 }
