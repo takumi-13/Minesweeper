@@ -93,12 +93,6 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     sizex: boardSize.sizeX,
     sizey: boardSize.sizeY,
   }
-  // const boardZoom = Math.min(
-  //   (500 - boardSize.sizeX) / 400 + 25 / boardSize.sizeX,
-  //   (500 - boardSize.sizeY) / 400 + 25 / boardSize.sizeY
-  // )
-
-  //const boardZoom = 30 * (1 - (0.98 * boardSize.sizeX) / (boardSize.sizeX + 1))
 
   const sizeXnorm = boardSize.sizeX / (boardSize.sizeX + 1)
   const sizeYnorm = boardSize.sizeY / (boardSize.sizeY + 1)

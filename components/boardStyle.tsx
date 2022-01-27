@@ -58,7 +58,7 @@ const Block = styled.div<PositionProps>`
   background-color: #d4d4d4;
   background-image: url(icons.png);
   background-repeat: no-repeat;
-  background-position: ${(props) => 45 - props.number * 45}px 5px;
+  background-position: ${(props) => 45 - props.number * 45}px 10px;
   background-size: 650px 30px;
   border: 1px solid;
 `
@@ -119,8 +119,8 @@ export const FaceIcon = styled(UnPushedBlock)<IconProps>`
   display: flex;
   float: left;
   margin-top: 12px;
-  background-position: ${(props) => 45 - props.number * 45}px 2px;
-  background-size: 603px 35px;
+  background-position: ${(props) => 45 - props.number * 45}px -3px;
+  background-size: 650px 45px;
   border: outset 6px;
 `
 export const TimerNum = styled(NumIcon)`

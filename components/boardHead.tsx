@@ -24,10 +24,10 @@ export const BoardHead: React.FC<BoardHeadProps> = ({ states, funs }) => {
 
 const decideNumber = (gameState: number): number => {
   if (gameState === 0 || gameState === -1) {
-    return 11.6
+    return 12.43
   } else if (gameState === 1) {
-    return 12.55
+    return 13.45
   } else {
-    return 13.5
+    return 14.5
   }
 }
