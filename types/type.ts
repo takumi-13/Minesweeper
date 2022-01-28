@@ -13,10 +13,6 @@ export type BoardZoomProps = {
   zoom: number
 }
 
-export type IconProps = {
-  number: number
-  boardSize: BoardSize
-}
 export type DifficultyFirstStates = {
   difficulty: string
   bomNum: number
