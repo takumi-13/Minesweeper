@@ -58,7 +58,7 @@ const Block = styled.div<PositionProps>`
   background-color: #d4d4d4;
   background-image: url(icons.png);
   background-repeat: no-repeat;
-  background-position: ${(props) => decideBackgroundPosition(props.number)}px 7px;
+  background-position: ${(props) => decide_background_position_numbers(props.number)}px 7px;
   background-size: 540px 36px;
   border: 1px solid;
 `
@@ -87,8 +87,8 @@ export const UnPushedBlock = styled(Block)<PositionProps>`
 `
 
 export const BomBlock = styled(Block)<PositionProps>`
-  background-position: -374px 7px;
   background-color: red;
+  background-position: -374px 7px;
 `
 export const FlagBlock = styled(UnPushedBlock)<PositionProps>`
   background-position: -337px 1px;
@@ -119,7 +119,7 @@ export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   display: flex;
   float: left;
   margin-top: 12px;
-  background-position: ${(props) => decideBackgroundPositionForFaceIcon(props.number)}px -3px;
+  background-position: ${(props) => decide_background_position_faceicon(props.number)}px -3px;
   background-size: 650px 45px;
   border: outset 6px;
 `
@@ -128,17 +128,17 @@ export const TimerNum = styled(NumIcon)`
   margin-right: 20px;
   margin-left: 0;
 `
-const decideBackgroundPosition = (num: number): number => {
+const decide_background_position_numbers = (num: number): number => {
   const backgroundPosition = [1000, 6, -32, -69, -107, -145, -183, -221, -258]
   return backgroundPosition[num]
 }
 
-const decideBackgroundPositionForFaceIcon = (num: number): number => {
+const decide_background_position_faceicon = (num: number): number => {
   const backgroundPosition = [-518, -563, -608]
-  return backgroundPosition[decideNumber(num)]
+  return backgroundPosition[getNumberFromState(num)]
 }
 
-const decideNumber = (gameState: number): number => {
+const getNumberFromState = (gameState: number): number => {
   if (gameState === 0 || gameState === -1) {
     return 0
   } else if (gameState === 1) {
