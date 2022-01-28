@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import type { BoardSizeProps, IconProps, PositionProps } from '../types/type'
+import type { BoardSizeProps, PositionProps } from '../types/type'
 
 const defaultBoardSize = {
   boardsize: {
@@ -58,8 +58,8 @@ const Block = styled.div<PositionProps>`
   background-color: #d4d4d4;
   background-image: url(icons.png);
   background-repeat: no-repeat;
-  background-position: ${(props) => 45 - props.number * 45}px 10px;
-  background-size: 650px 30px;
+  background-position: ${(props) => decideBackgroundPosition(props.number)}px 7px;
+  background-size: 540px 36px;
   border: 1px solid;
 `
 
@@ -87,14 +87,14 @@ export const UnPushedBlock = styled(Block)<PositionProps>`
 `
 
 export const BomBlock = styled(Block)<PositionProps>`
+  background-position: -374px 7px;
   background-color: red;
-  background-position: -462px 10px;
 `
 export const FlagBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -420px 5px;
+  background-position: -337px 1px;
 `
 export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -375px 5px;
+  background-position: -300px 1px;
 `
 
 const NumIcon = styled.div`
@@ -115,15 +115,35 @@ export const FlagNum = styled(NumIcon)`
   margin-right: 0;
   margin-left: 20px;
 `
-export const FaceIcon = styled(UnPushedBlock)<IconProps>`
+export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   display: flex;
   float: left;
   margin-top: 12px;
-  background-position: ${(props) => 45 - props.number * 45}px -3px;
+  background-position: ${(props) => decideBackgroundPositionForFaceIcon(props.number)}px -3px;
   background-size: 650px 45px;
   border: outset 6px;
 `
+
 export const TimerNum = styled(NumIcon)`
   margin-right: 20px;
   margin-left: 0;
 `
+const decideBackgroundPosition = (num: number): number => {
+  const backgroundPosition = [1000, 6, -32, -69, -107, -145, -183, -221, -258]
+  return backgroundPosition[num]
+}
+
+const decideBackgroundPositionForFaceIcon = (num: number): number => {
+  const backgroundPosition = [-518, -563, -608]
+  return backgroundPosition[decideNumber(num)]
+}
+
+const decideNumber = (gameState: number): number => {
+  if (gameState === 0 || gameState === -1) {
+    return 0
+  } else if (gameState === 1) {
+    return 1
+  } else {
+    return 2
+  }
+}
