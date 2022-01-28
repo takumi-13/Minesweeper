@@ -17,6 +17,7 @@ export const Main = styled.main`
   align-items: center;
   justify-content: center;
   padding: 5rem 0;
+  zoom: 27%;
 `
 export const Footer = styled.footer`
   display: flex;
