@@ -88,13 +88,14 @@ export const UnPushedBlock = styled(Block)<PositionProps>`
 
 export const BomBlock = styled(Block)<PositionProps>`
   background-color: red;
-  background-position: -374px 7px;
+  background-position: -425px 5px;
+  background-size: 600px 40px;
 `
 export const FlagBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -337px 1px;
+  background-position: -345px 1px;
 `
 export const HatenaBlock = styled(UnPushedBlock)<PositionProps>`
-  background-position: -300px 1px;
+  background-position: -307px 1px;
 `
 
 const NumIcon = styled.div`
@@ -119,8 +120,8 @@ export const FaceIcon = styled(UnPushedBlock)<PositionProps>`
   display: flex;
   float: left;
   margin-top: 12px;
-  background-position: ${(props) => decide_background_position_faceicon(props.number)}px -3px;
-  background-size: 650px 45px;
+  background-position: ${(props) => decide_background_position_faceicon(props.number)}px 1px;
+  background-size: 540px 36px;
   border: outset 6px;
 `
 
@@ -129,12 +130,12 @@ export const TimerNum = styled(NumIcon)`
   margin-left: 0;
 `
 const decide_background_position_numbers = (num: number): number => {
-  const backgroundPosition = [1000, 6, -32, -69, -107, -145, -183, -221, -258]
+  const backgroundPosition = [1000, 6, -32, -71, -110, -148, -186, -226, -265]
   return backgroundPosition[num]
 }
 
 const decide_background_position_faceicon = (num: number): number => {
-  const backgroundPosition = [-518, -563, -608]
+  const backgroundPosition = [-424, -463, -501]
   return backgroundPosition[getNumberFromState(num)]
 }
 
