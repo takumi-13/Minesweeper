@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { BoardOriginProps } from '../types/board/origin'
 import type { ClickBlockAction } from '../types/board/util'
 import type { BoardZoomProps, Pos, Values } from '../types/type'
-import { calBom } from '../utils/bom'
+import { calBom, resetBoms } from '../utils/bom'
 import { posArrayEquall, posEquall } from '../utils/position'
 import { updatePosition } from '../utils/updatePosition'
 import { BoardHead } from './boardHead'
@@ -24,6 +24,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     checkGameStart,
     setGameover,
     setGameClear,
+    setBoms,
   } = { ...funs }
   const { board, flgPosition, boms, pushedBlockNum, boardSize } = {
     ...parentStates,
@@ -71,22 +72,37 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
   }
 
   const onClick = (posX: number, posY: number) => {
-    checkGameStart()
     const isBom = boms.some((el) => posEquall({ x: posX, y: posY }, el))
+    const isFirstMove = checkGameStart()
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
-    if (isBom) {
-      const newPositions: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: -1 }))
-      setGameover()
-      applyBoard(newBoard, newPositions)
-      return
-    }
+    const newPositions = isBom
+      ? isFirstMove
+        ? getNewPositionsInFirstMove(posX, posY)
+        : getNewPositionsInEndGame()
+      : getNewPosition(posX, posY)
+    applyBoard(newBoard, newPositions)
+  }
+
+  const getNewPositionsInEndGame = () => {
+    const newPositions: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: -1 }))
+    setGameover()
+    return newPositions
+  }
+
+  const getNewPosition = (posX: number, posY: number) => {
     const newNum: number = calBom(posX, posY, boms)
     const newPositions = updatePosition(pushedBlockNum, board, boms, newNum, posX, posY, boardSize)
 
     const nowPushedBlockNum = pushedBlockNum + newPositions.length
     setPushedBlockNum(nowPushedBlockNum)
-    applyBoard(newBoard, judgePushAllBlocks(newPositions, nowPushedBlockNum))
+    return judgePushAllBlocks(newPositions, nowPushedBlockNum)
+  }
+
+  const getNewPositionsInFirstMove = (posX: number, posY: number) => {
+    const bomNum: number = boms.length
+    setBoms(resetBoms(posX, posY, bomNum, boardSize))
+    return getNewPosition(posX, posY)
   }
 
   const tmpBoardSize = {
