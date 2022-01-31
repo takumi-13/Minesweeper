@@ -79,11 +79,13 @@ const Home: NextPage = () => {
     countStop()
   }
 
-  const checkGameStart = () => {
+  const checkGameStart = (): boolean => {
     if (gameState === -1) {
       setGameState(0)
       countStart()
+      return true
     }
+    return false
   }
 
   return (
@@ -112,6 +114,7 @@ const Home: NextPage = () => {
             setPushedBlockNum,
             setFlgPosition,
             setBoard,
+            setBoms,
           }}
         />
       </Main>

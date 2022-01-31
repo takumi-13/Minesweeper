@@ -16,12 +16,13 @@ export type BoardOriginProps = {
   }
   funs: {
     refreshState: ClickAction
-    checkGameStart: ClickAction
+    checkGameStart: () => boolean
     setGameover: ClickAction
     setGameClear: ClickAction
     setGameState: React.Dispatch<React.SetStateAction<number>>
     setFlgPosition: React.Dispatch<React.SetStateAction<Pos[]>>
     setPushedBlockNum: React.Dispatch<React.SetStateAction<number>>
     setBoard: React.Dispatch<React.SetStateAction<number[][]>>
+    setBoms: React.Dispatch<React.SetStateAction<Pos[]>>
   }
 }
