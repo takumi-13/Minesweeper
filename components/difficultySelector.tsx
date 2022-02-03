@@ -12,9 +12,7 @@ import { DifficultyButton } from './difficultyButton'
 import { SpecialForm } from './specialForm'
 
 const DifficultySelectorDiv = styled.div`
-  margin: 0 auto;
-  margin-left: 1em;
-  zoom: 3;
+  margin-left: 0.5em;
 `
 
 export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, funs }) => {

@@ -40,6 +40,8 @@ export const BoardHeader = styled.div<BoardSizeProps>`
 BoardHeader.defaultProps = defaultBoardSize
 
 export const BoardFrame = styled.div<BoardSizeProps>`
+  transform-origin: top left;
+  transform: scale(0.9);
   width: ${(props) => 55 + props.boardsize.sizex * 50}px;
   height: ${(props) => 160 + props.boardsize.sizey * 50}px;
   background-color: #d4d4d4;
