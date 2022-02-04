@@ -26,7 +26,7 @@ const StyledLabel = styled.label`
   font-weight: bold;
 `
 const StyledDiv = styled.div`
-  padding-left: 0.5em;
+  padding-bottom: 0.5em;
 `
 
 export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {
