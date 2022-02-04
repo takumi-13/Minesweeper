@@ -17,7 +17,7 @@ const DifficultySelectorDiv = styled.div`
   flex-direction: column;
 `
 const DifficultyButtonDiv = styled.div`
-  padding-bottom: 0.5em;
+  padding-bottom: 0.25em;
 `
 
 export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, funs }) => {
