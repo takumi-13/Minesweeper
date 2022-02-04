@@ -7,7 +7,7 @@ import { FIRST_STATE_SPECIAL } from '../utils/firstState'
 const StyledInput = styled.input`
   width: 4em;
   margin-right: 1em;
-  font-size: 20px;
+  font-size: 24px;
   border: 2px solid #ddd;
 `
 const StyledButton = styled.button`
@@ -22,11 +22,11 @@ const StyledButton = styled.button`
 `
 
 const StyledLabel = styled.label`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
 `
 const StyledDiv = styled.div`
-  margin-left: 0.5em;
+  padding-left: 0.5em;
 `
 
 export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {

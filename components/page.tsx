@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  height: 100vh;
-  min-height: 100vh;
   padding: 0 0.5rem;
+  transform-origin: top center;
+  transform: scale(0.7);
+
   display: flex;
+  justify-content: center;
 `
 
 export const Main = styled.main`

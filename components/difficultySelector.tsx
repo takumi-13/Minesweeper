@@ -12,8 +12,11 @@ import { DifficultyButton } from './difficultyButton'
 import { SpecialForm } from './specialForm'
 
 const DifficultySelectorDiv = styled.div`
-  margin-left: 0.5em;
+  padding: 0 1em;
+  display: flex;
+  flex-direction: column;
 `
+const DifficultyButtonDiv = styled.div``
 
 export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, funs }) => {
   const [specialFirstState, setSpecialFirstState] =
@@ -42,18 +45,22 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({ states, 
 
   return isActive.special ? (
     <DifficultySelectorDiv>
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+      <DifficultyButtonDiv>
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+      </DifficultyButtonDiv>
       <SpecialForm funs={{ refreshStateWithDifficulty, setSpecialFirstState }} />
     </DifficultySelectorDiv>
   ) : (
     <DifficultySelectorDiv>
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
-      <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+      <DifficultyButtonDiv>
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.easy} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.middle} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.difficult} />
+        <DifficultyButton funs={{ refreshStateWithDifficulty }} consts={consts.special} />
+      </DifficultyButtonDiv>
     </DifficultySelectorDiv>
   )
 }
