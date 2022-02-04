@@ -12,9 +12,9 @@ import { DifficultyButton } from './difficultyButton'
 import { SpecialForm } from './specialForm'
 
 const DifficultySelectorDiv = styled.div`
-  padding: 0 1em;
   display: flex;
   flex-direction: column;
+  padding: 0 1em;
 `
 const DifficultyButtonDiv = styled.div`
   padding-bottom: 0.25em;
