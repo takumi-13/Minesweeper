@@ -1,18 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
 import { BoardOriginProps } from '../types/board/origin'
 import type { ClickBlockAction } from '../types/board/util'
-import type { BoardZoomProps, Pos, Values } from '../types/type'
+import type { Pos, Values } from '../types/type'
 import { calBom, resetBoms } from '../utils/bom'
 import { posArrayEquall, posEquall } from '../utils/position'
 import { updatePosition } from '../utils/updatePosition'
 import { BoardHead } from './boardHead'
 import { BoardContent } from './boardMain'
 import { BoardFrame } from './boardStyle'
-
-const StyledDiv = styled.div<BoardZoomProps>`
-  zoom: ${(props) => props.zoom};
-`
 
 export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) => {
   const {
@@ -110,17 +105,10 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     sizey: boardSize.sizeY,
   }
 
-  const sizeXnorm = boardSize.sizeX / (boardSize.sizeX + 1)
-  const sizeYnorm = boardSize.sizeY / (boardSize.sizeY + 1)
-  const boardZoomX = 40 * (1 - 0.994 * sizeXnorm)
-  const boardZoomY = 40 * (1 - 0.994 * sizeYnorm)
-  const boardZoom = Math.min(boardZoomX, boardZoomY)
   return (
-    <StyledDiv zoom={boardZoom}>
-      <BoardFrame boardsize={tmpBoardSize}>
-        <BoardHead states={parentStates} funs={{ refreshState }} />
-        <BoardContent states={parentStates} funs={{ onClick, onContextMenu }} />
-      </BoardFrame>
-    </StyledDiv>
+    <BoardFrame boardsize={tmpBoardSize}>
+      <BoardHead states={parentStates} funs={{ refreshState }} />
+      <BoardContent states={parentStates} funs={{ onClick, onContextMenu }} />
+    </BoardFrame>
   )
 }

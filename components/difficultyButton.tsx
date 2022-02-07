@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { DifficultyButtonProps } from '../types/difficultySelector/difficultyButton'
 
 const MyButton = styled.button`
-  margin-right: 1em;
-  font-size: 24px;
+  padding: 0;
+  margin-right: 25px;
+  font-size: 26px;
   font-weight: bold;
   color: black;
   cursor: pointer;
