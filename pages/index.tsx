@@ -3,10 +3,12 @@ import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
 import { BoardOrigin } from '../components/boardOrigin'
 import { DifficultySelector } from '../components/difficultySelector'
+import { HighScoreModal } from '../components/highScoreModal'
 import { Container, Main } from '../components/page'
 import { BoardSize, DifficultyFirstStates, Pos } from '../types/type'
 import { createBom } from '../utils/bom'
 import { FIRST_STATE_COMMON, FIRST_STATE_EASY } from '../utils/firstState'
+import { saveClearResult } from '../utils/result'
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
@@ -51,8 +53,6 @@ const Home: NextPage = () => {
     sizeY: nowFirstState.sizeY,
   })
 
-  const states = { gameState, board, flgPosition, count, boms, pushedBlockNum, boardSize }
-
   const intervalRef = useRef<number | null>(null)
   const countStart = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -71,6 +71,7 @@ const Home: NextPage = () => {
   }, [])
 
   const setGameClear = () => {
+    saveClearResult(nowFirstState.difficulty, count)
     setGameState(1)
     countStop()
   }
@@ -88,6 +89,21 @@ const Home: NextPage = () => {
     return false
   }
 
+  const boardStates = { gameState, board, flgPosition, count, boms, pushedBlockNum, boardSize }
+  const boardFuns = {
+    refreshState,
+    checkGameStart,
+    setGameover,
+    setGameClear,
+    setGameState,
+    setPushedBlockNum,
+    setFlgPosition,
+    setBoard,
+    setBoms,
+  }
+
+  const showModal = gameState === 1 && nowFirstState.difficulty !== 'special'
+
   return (
     <Container>
       <Head>
@@ -103,20 +119,15 @@ const Home: NextPage = () => {
             refreshStateWithDifficulty,
           }}
         />
-        <BoardOrigin
-          parentStates={states}
-          funs={{
-            refreshState,
-            checkGameStart,
-            setGameover,
-            setGameClear,
-            setGameState,
-            setPushedBlockNum,
-            setFlgPosition,
-            setBoard,
-            setBoms,
-          }}
-        />
+        <BoardOrigin parentStates={boardStates} funs={boardFuns} />
+        {showModal ? (
+          <HighScoreModal
+            consts={{ difficulty: nowFirstState.difficulty }}
+            funs={{ refreshState }}
+          />
+        ) : (
+          ''
+        )}
       </Main>
     </Container>
   )
