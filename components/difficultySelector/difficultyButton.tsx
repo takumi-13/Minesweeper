@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { DifficultyButtonProps } from '../types/difficultySelector/difficultyButton'
+import { DifficultyButtonProps } from '../../types/difficultySelector/difficultyButton'
 
 const MyButton = styled.button`
   padding: 0;

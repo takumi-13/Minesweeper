@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { DifficultySelectorProps } from '../types/difficultySelector/difficultySelector'
-import { DifficultyFirstStates } from '../types/type'
+import { DifficultySelectorProps } from '../../types/difficultySelector/difficultySelector'
+import { DifficultyFirstStates } from '../../types/type'
 import {
   FIRST_STATE_DIFFICULT,
   FIRST_STATE_EASY,
   FIRST_STATE_MIDDLE,
   FIRST_STATE_SPECIAL,
-} from '../utils/firstState'
+} from '../../utils/firstState'
 import { DifficultyButton } from './difficultyButton'
 import { SpecialForm } from './specialForm'
 

@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useRef, useState } from 'react'
-import { BoardOrigin } from '../components/boardOrigin'
-import { DifficultySelector } from '../components/difficultySelector'
-import { HighScoreModal } from '../components/highScoreModal'
+import { BoardOrigin } from '../components/board/boardOrigin'
+import { DifficultySelector } from '../components/difficultySelector/difficultySelector'
+import { HighScoreModal } from '../components/highscoreModal/highScoreModal'
 import { Container, Main } from '../components/page'
 import { BoardSize, DifficultyFirstStates, Pos } from '../types/type'
 import { createBom } from '../utils/bom'
@@ -74,6 +74,8 @@ const Home: NextPage = () => {
     saveClearResult(nowFirstState.difficulty, count)
     setGameState(1)
     countStop()
+    setActiveTab(nowFirstState.difficulty)
+    nowFirstState.difficulty !== 'special' && setShowModal(true)
   }
   const setGameover = () => {
     setGameState(99)
@@ -102,7 +104,8 @@ const Home: NextPage = () => {
     setBoms,
   }
 
-  const showModal = gameState === 1 && nowFirstState.difficulty !== 'special'
+  const [showModal, setShowModal] = useState(false)
+  const [activeTab, setActiveTab] = useState(nowFirstState.difficulty)
 
   return (
     <Container>
@@ -120,14 +123,11 @@ const Home: NextPage = () => {
           }}
         />
         <BoardOrigin parentStates={boardStates} funs={boardFuns} />
-        {showModal ? (
-          <HighScoreModal
-            consts={{ difficulty: nowFirstState.difficulty }}
-            funs={{ refreshState }}
-          />
-        ) : (
-          ''
-        )}
+        <HighScoreModal
+          states={{ showModal, activeTab }}
+          consts={{ difficulty: nowFirstState.difficulty }}
+          funs={{ refreshStateWithDifficulty, setShowModal, setActiveTab }}
+        />
       </Main>
     </Container>
   )
