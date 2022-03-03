@@ -24,13 +24,13 @@ export const getInsertIndex = (
 export const getResultMessage = (
   activeTab: string,
   difficulty: string,
-  insertIndex: number | null
+  insertIndex: number
 ): string => {
   return activeTab === difficulty ? getActiveResultMessage(insertIndex) : ''
 }
 
-export const getActiveResultMessage = (insertIndex: number | null): string => {
-  return insertIndex === null
+export const getActiveResultMessage = (insertIndex: number): string => {
+  return insertIndex === -1
     ? `残念、ランキング圏外だ。\nランキング入賞を目指してみよう！`
     : insertIndex === 0
     ? `1位おめでとう！！！\n記録を更新したよ！！！`
@@ -42,7 +42,8 @@ export const extractResultTop5ASC = (result: (number | null)[]): (number | null)
 
   return result
     .map((elm) => (elm === null ? Number.MAX_SAFE_INTEGER : elm))
-    .slice(0, 5)
+    .slice()
     .sort(compareNumber)
     .map((elm) => (elm === Number.MAX_SAFE_INTEGER ? null : elm))
+    .slice(0, 5)
 }
