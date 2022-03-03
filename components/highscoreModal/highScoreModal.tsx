@@ -3,7 +3,12 @@ import { Box, Dialog, Tab, Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { HighScoreModalProps } from '../../types/highScoreModal/highScoreModal'
-import { formatTime, getInsertIndex, getResultMessage } from '../../utils/highscoreModal'
+import {
+  extractResultTop5ASC,
+  formatTime,
+  getInsertIndex,
+  getResultMessage,
+} from '../../utils/highscoreModal'
 import { getClearResultAsNumberList } from '../../utils/result'
 import { CloseButton } from './closeButton'
 import { HighScoreModalTable } from './highScoreModalTable'
@@ -14,7 +19,7 @@ const HighScoreModalNotDynamic: React.FC<HighScoreModalProps> = ({ states, const
     funs.setActiveTab(newValue)
   }
 
-  const activeClearResult = getClearResultAsNumberList(states.activeTab)
+  const activeClearResult: (number | null)[] = getClearResultAsNumberList(states.activeTab)
   const currentResult: number = activeClearResult[0] as number
   const previousResultList = activeClearResult.slice(1)
 
@@ -24,11 +29,9 @@ const HighScoreModalNotDynamic: React.FC<HighScoreModalProps> = ({ states, const
     previousResultList,
     currentResult
   )
-
-  const displayResult = activeClearResult
-    .sort()
-    .map((element) => formatTime(element))
-    .splice(0, 5)
+  const displayResult = extractResultTop5ASC(activeClearResult).map((element) =>
+    formatTime(element)
+  )
 
   const resultMessage = getResultMessage(states.activeTab, consts.difficulty, insertIndex)
 

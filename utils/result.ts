@@ -1,9 +1,10 @@
+import { extractResultTop5ASC } from './highscoreModal'
+
 export const saveClearResult = (difficulty: string, time: number) => {
   //以前のクリアデータはソートされていないため、ソートして上位5つを取得する
-  const localStorageDataNotNull = getClearResultAsNumberList(difficulty)
-    .sort()
-    .slice(0, 5)
-    .map((elem) => (elem === null ? NaN : elem))
+  const localStorageDataNotNull = extractResultTop5ASC(getClearResultAsNumberList(difficulty)).map(
+    (elem) => (elem === null ? NaN : elem)
+  )
   //一番最初に最新の値が入る（表示時に既存の値と最新の値を区別するため）
   const localStorageDataNoDuplicate: (number | null)[] = localStorageDataNotNull
     .filter((element) => element !== time)

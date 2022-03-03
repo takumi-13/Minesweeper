@@ -36,3 +36,13 @@ export const getActiveResultMessage = (insertIndex: number | null): string => {
     ? `1位おめでとう！！！\n記録を更新したよ！！！`
     : `ランクインおめでとう！！！\n次は1位を目指そう！`
 }
+
+export const extractResultTop5ASC = (result: (number | null)[]): (number | null)[] => {
+  const compareNumber = (n1: number, n2: number) => n1 - n2
+
+  return result
+    .map((elm) => (elm === null ? Number.MAX_SAFE_INTEGER : elm))
+    .slice(0, 5)
+    .sort(compareNumber)
+    .map((elm) => (elm === Number.MAX_SAFE_INTEGER ? null : elm))
+}
