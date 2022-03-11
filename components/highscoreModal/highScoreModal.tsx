@@ -3,13 +3,9 @@ import { Box, Dialog, Tab, Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { HighScoreModalProps } from '../../types/highScoreModal/highScoreModal'
-import {
-  extractResultTop5ASC,
-  formatTime,
-  getInsertIndex,
-  getResultMessage,
-} from '../../utils/highscoreModal'
-import { getClearResultAsNumberList } from '../../utils/result'
+import { LocalStorageDataList, ManageLocalStorageData } from '../../types/type'
+import { formatTime, getInsertIndex, getResultMessage } from '../../utils/highscoreModal'
+import { concatResultTop5ASC, getClearResultAsNumberList } from '../../utils/result'
 import { CloseButton } from './closeButton'
 import { HighScoreModalTable } from './highScoreModalTable'
 import { ReplayButton } from './replayButton'
@@ -19,9 +15,10 @@ const HighScoreModalNotDynamic: React.FC<HighScoreModalProps> = ({ states, const
     funs.setActiveTab(newValue)
   }
 
-  const activeClearResult: (number | null)[] = getClearResultAsNumberList(states.activeTab)
-  const currentResult: number = activeClearResult[0] as number
-  const previousResultList = activeClearResult.slice(1)
+  const localStorageData: ManageLocalStorageData = getClearResultAsNumberList(states.activeTab)
+  const currentResult = localStorageData.currentResult
+  const previousResultList: LocalStorageDataList = localStorageData.previousResult
+  const activeClearResult = concatResultTop5ASC(localStorageData)
 
   const insertIndex: number = getInsertIndex(
     states.activeTab,
@@ -29,9 +26,7 @@ const HighScoreModalNotDynamic: React.FC<HighScoreModalProps> = ({ states, const
     previousResultList,
     currentResult
   )
-  const displayResult = extractResultTop5ASC(activeClearResult).map((element) =>
-    formatTime(element)
-  )
+  const displayResult = activeClearResult.map((element) => formatTime(element))
 
   const resultMessage = getResultMessage(states.activeTab, consts.difficulty, insertIndex)
 
