@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SpecialFormProps } from '../types/difficultySelector/specialForm'
-import { makeFirstBoard } from '../utils/board'
-import { FIRST_STATE_SPECIAL } from '../utils/firstState'
+import { SpecialFormProps } from '../../types/difficultySelector/specialForm'
+import { makeFirstBoard } from '../../utils/board'
+import { FIRST_STATE_SPECIAL } from '../../utils/firstState'
 
 const StyledInput = styled.input`
   width: 4em;

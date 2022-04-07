@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import type { BoardSizeProps, PositionProps } from '../types/type'
+import type { BoardSizeProps, PositionProps } from '../../types/type'
 
 const defaultBoardSize = {
   boardsize: {

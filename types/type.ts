@@ -20,3 +20,9 @@ export type BoardSize = {
   sizeX: number
   sizeY: number
 }
+
+export type LocalStorageDataList = (number | null)[]
+export type ManageLocalStorageData = {
+  currentResult: number
+  previousResult: LocalStorageDataList
+}
