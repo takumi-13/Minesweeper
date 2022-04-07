@@ -8,7 +8,7 @@ export type DifficultySelectorProps = {
 type DifficultySelectorStates = {
   boardSize: BoardSize
   boms: Pos[]
-  nowFirstState: DifficultyFirstStates
+  currentFirstState: DifficultyFirstStates
 }
 
 type DifficultySelectorFuns = {

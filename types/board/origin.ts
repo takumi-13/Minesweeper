@@ -18,7 +18,7 @@ export type BoardOriginProps = {
     refreshState: ClickAction
     checkGameStart: () => boolean
     setGameover: ClickAction
-    setGameClear: ClickAction
+    setGameCompleted: ClickAction
     setGameState: React.Dispatch<React.SetStateAction<number>>
     setFlgPosition: React.Dispatch<React.SetStateAction<Pos[]>>
     setPushedBlockNum: React.Dispatch<React.SetStateAction<number>>

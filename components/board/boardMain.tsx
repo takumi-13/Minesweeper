@@ -1,5 +1,5 @@
 import React from 'react'
-import { BoardContentProps, BoardMainProps, PushedBlockProps } from '../types/board/main'
+import { BoardContentProps, BoardMainProps, PushedBlockProps } from '../../types/board/main'
 import { Board, BomBlock, FlagBlock, HatenaBlock, PushedBlock, UnPushedBlock } from './boardStyle'
 
 export const BoardContent: React.FC<BoardContentProps> = ({ states, funs }) => {

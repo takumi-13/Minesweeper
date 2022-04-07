@@ -1,5 +1,5 @@
 import React from 'react'
-import { BoardHeadProps } from '../types/board/header'
+import { BoardHeadProps } from '../../types/board/header'
 import { BoardHeader, FaceIcon, FlagNum, TimerNum } from './boardStyle'
 
 export const BoardHead: React.FC<BoardHeadProps> = ({ states, funs }) => {

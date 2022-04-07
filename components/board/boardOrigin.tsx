@@ -1,10 +1,10 @@
 import React from 'react'
-import { BoardOriginProps } from '../types/board/origin'
-import type { ClickBlockAction } from '../types/board/util'
-import type { Pos, Values } from '../types/type'
-import { calBom, resetBoms } from '../utils/bom'
-import { posArrayEquall, posEquall } from '../utils/position'
-import { updatePosition } from '../utils/updatePosition'
+import { BoardOriginProps } from '../../types/board/origin'
+import type { ClickBlockAction } from '../../types/board/util'
+import type { Pos, Values } from '../../types/type'
+import { calBom, resetBoms } from '../../utils/bom'
+import { posArrayEqual, posEqual } from '../../utils/position'
+import { updatePosition } from '../../utils/updatePosition'
 import { BoardHead } from './boardHead'
 import { BoardContent } from './boardMain'
 import { BoardFrame } from './boardStyle'
@@ -18,7 +18,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     refreshState,
     checkGameStart,
     setGameover,
-    setGameClear,
+    setGameCompleted,
     setBoms,
   } = { ...funs }
   const { board, flgPosition, boms, pushedBlockNum, boardSize } = {
@@ -26,7 +26,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
   }
   const onContextMenu: ClickBlockAction = (posX: number, posY: number) => {
     checkGameStart()
-    const removeFlgPosition = (flg: Pos) => [...flgPosition].filter((el) => !posEquall(el, flg))
+    const removeFlgPosition = (flg: Pos) => [...flgPosition].filter((el) => !posEqual(el, flg))
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))
     const newFlgPosition: Pos = { x: posX, y: posY }
     const isFlg = board[posY][posX] === 99
@@ -43,7 +43,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
       newBoard[posY][posX] = 100
       newFlgPositions = removeFlgPosition(newFlgPosition)
     }
-    posArrayEquall(newFlgPositions, boms) ? setGameClear() : setGameState(0)
+    posArrayEqual(newFlgPositions, boms) ? setGameCompleted() : setGameState(0)
     setFlgPosition(newFlgPositions)
     setBoard(newBoard)
   }
@@ -51,7 +51,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
     if (nowPushedBlockNum !== boardSize.sizeX * boardSize.sizeY - boms.length) {
       return newPositions
     }
-    setGameClear()
+    setGameCompleted()
     const newPosition: Values[] = boms.map((el) => ({ x: el.x, y: el.y, value: 99 }))
     const newFlgPosition: Pos[] = boms.map((el) => ({ x: el.x, y: el.y }))
     setFlgPosition(newFlgPosition)
@@ -67,7 +67,7 @@ export const BoardOrigin: React.FC<BoardOriginProps> = ({ parentStates, funs }) 
   }
 
   const onClick = (posX: number, posY: number) => {
-    const isBom = boms.some((el) => posEquall({ x: posX, y: posY }, el))
+    const isBom = boms.some((el) => posEqual({ x: posX, y: posY }, el))
     const isFirstMove = checkGameStart()
 
     const newBoard: typeof board = JSON.parse(JSON.stringify(board))

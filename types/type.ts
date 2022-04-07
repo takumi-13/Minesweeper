@@ -10,7 +10,7 @@ export type BoardSizeProps = {
 }
 
 export type DifficultyFirstStates = {
-  difficulty: string
+  difficulty: Difficulty
   bomNum: number
   sizeX: number
   sizeY: number
@@ -20,3 +20,18 @@ export type BoardSize = {
   sizeX: number
   sizeY: number
 }
+
+export type LocalStorageDataList = (number | null)[]
+export type ManageLocalStorageData = {
+  currentResult: number
+  previousResult: LocalStorageDataList
+}
+export type AllManageLocalStorageData = {
+  easy: ManageLocalStorageData
+  middle: ManageLocalStorageData
+  difficult: ManageLocalStorageData
+  special: ManageLocalStorageData
+}
+
+export type Difficulty = 'easy' | 'middle' | 'difficult' | 'special'
+export type DifficultyJP = '初級' | '中級' | '上級' | 'スペシャル'
