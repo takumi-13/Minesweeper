@@ -1,30 +1,27 @@
-import { LocalStorageDataList, ManageLocalStorageData } from '../types/type'
+import { Difficulty, LocalStorageDataList, ManageLocalStorageData } from '../types/type'
 
-export const saveClearResult = (difficulty: string, time: number) => {
-  const clearResult = concatResultTop5ASC(getClearResultAsNumberList(difficulty))
-  const clearResultDataNotDuplicate = clearResult.filter((element) => element !== time)
+export const saveCompletedResult = (difficulty: Difficulty, time: number) => {
+  const completedResult = concatResultTop5ASC(getCompletedResult(difficulty))
+  const completedResultDataNotDuplicate = completedResult.filter((element) => element !== time)
   const resultLocalStorageData: ManageLocalStorageData = {
     currentResult: time,
-    previousResult: clearResultDataNotDuplicate,
+    previousResult: completedResultDataNotDuplicate,
   }
-
   localStorage.setItem(difficulty, JSON.stringify(resultLocalStorageData))
 }
 
-export const getClearResultAsNumberList = (difficulty: string): ManageLocalStorageData => {
-  const localStorageData =
-    localStorage.getItem(difficulty) ??
-    '{"currentResult":0,"previousResult":[null,null,null,null,null]}'
-  const manageLocalStorageData: ManageLocalStorageData = {
-    currentResult: JSON.parse(localStorageData).currentResult,
-    previousResult: JSON.parse(localStorageData).previousResult,
-  }
-  return manageLocalStorageData
+export const getCompletedResult = (difficulty: Difficulty): ManageLocalStorageData => {
+  const localStorageText = localStorage.getItem(difficulty)
+  const localStorageData: ManageLocalStorageData = localStorageText
+    ? JSON.parse(localStorageText)
+    : { currentResult: -1, previousResult: [null, null, null, null, null] }
+  return localStorageData
 }
 
 export const concatResultTop5ASC = (result: ManageLocalStorageData): LocalStorageDataList => {
   const compareNumber = (n1: number, n2: number) => n1 - n2
-  return [result.currentResult, ...result.previousResult]
+  const currentResult: number | null = result.currentResult === -1 ? null : result.currentResult
+  return [currentResult, ...result.previousResult]
     .map((elm) => (elm === null ? Number.MAX_SAFE_INTEGER : elm))
     .sort(compareNumber)
     .map((elm) => (elm === Number.MAX_SAFE_INTEGER ? null : elm))

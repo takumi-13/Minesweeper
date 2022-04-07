@@ -1,8 +1,8 @@
-import { DifficultyFirstStates } from '../type'
+import { Difficulty, DifficultyFirstStates } from '../type'
 
 export type ReplayButtonProps = {
   consts: {
-    difficulty: string
+    difficulty: Difficulty
     isLastPlay: boolean
   }
   funs: {

@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { SpecialFormProps } from '../../types/difficultySelector/specialForm'
 import { makeFirstBoard } from '../../utils/board'
-import { FIRST_STATE_SPECIAL } from '../../utils/firstState'
+import { DIFFICULTY_SPECIAL } from '../../utils/constants/difficulty'
+import { FIRST_STATE_SPECIAL } from '../../utils/constants/firstState'
 
 const StyledInput = styled.input`
   width: 4em;
@@ -37,7 +38,7 @@ export const SpecialForm: React.FC<SpecialFormProps> = ({ funs }) => {
   const applyChanges = () => {
     const newBoard = makeFirstBoard(inputSizeY, inputSizeX)
     const res = {
-      difficulty: 'special',
+      difficulty: DIFFICULTY_SPECIAL.difficulty,
       bomNum: inputBomNum,
       sizeX: inputSizeX,
       sizeY: inputSizeY,

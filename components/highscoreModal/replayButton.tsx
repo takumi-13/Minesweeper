@@ -1,17 +1,30 @@
 import { Button } from '@mui/material'
 import React from 'react'
 import { ReplayButtonProps } from '../../types/highScoreModal/replayButton'
-import { DifficultyFirstStates } from '../../types/type'
-import { FIRST_STATE_DIFFICULT, FIRST_STATE_EASY, FIRST_STATE_MIDDLE } from '../../utils/firstState'
+import { Difficulty, DifficultyFirstStates } from '../../types/type'
+import {
+  DIFFICULTY_DIFFICULT,
+  DIFFICULTY_EASY,
+  DIFFICULTY_MIDDLE,
+} from '../../utils/constants/difficulty'
+import {
+  FIRST_STATE_DIFFICULT,
+  FIRST_STATE_EASY,
+  FIRST_STATE_MIDDLE,
+} from '../../utils/constants/firstState'
 
-const formatDifficultyName = (difficulty: string) => {
-  return difficulty === 'easy' ? '初級' : difficulty === 'middle' ? '中級' : '上級'
+const formatDifficultyName = (difficulty: Difficulty) => {
+  return difficulty === DIFFICULTY_EASY.difficulty
+    ? DIFFICULTY_EASY.difficultyJP
+    : difficulty === DIFFICULTY_MIDDLE.difficulty
+    ? DIFFICULTY_MIDDLE.difficultyJP
+    : DIFFICULTY_DIFFICULT.difficultyJP
 }
 
-const getDifficultyValues = (difficulty: string): DifficultyFirstStates => {
-  return difficulty === 'easy'
+const getDifficultyValues = (difficulty: Difficulty): DifficultyFirstStates => {
+  return difficulty === DIFFICULTY_EASY.difficulty
     ? FIRST_STATE_EASY
-    : difficulty === 'middle'
+    : difficulty === DIFFICULTY_MIDDLE.difficulty
     ? FIRST_STATE_MIDDLE
     : FIRST_STATE_DIFFICULT
 }

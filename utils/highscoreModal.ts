@@ -1,3 +1,5 @@
+import { Difficulty, LocalStorageDataList } from '../types/type'
+
 export const formatTime = (time: number | null) => {
   if (time === null) {
     return '-'
@@ -8,10 +10,8 @@ export const formatTime = (time: number | null) => {
   }
 }
 
-export const getInsertIndex = (
-  activeTab: string,
-  difficulty: string,
-  previousResultList: (number | null)[],
+export const getCurrentIndex = (
+  previousResultList: LocalStorageDataList,
   currentResult: number
 ): number => {
   const previousResultListNotNull: number[] = previousResultList.map((elem) =>
@@ -23,16 +23,16 @@ export const getInsertIndex = (
 
 export const getResultMessage = (
   activeTab: string,
-  difficulty: string,
-  insertIndex: number
+  difficulty: Difficulty,
+  currentIndex: number
 ): string => {
-  return activeTab === difficulty ? getActiveResultMessage(insertIndex) : ''
+  return activeTab === difficulty ? getActiveResultMessage(currentIndex) : ''
 }
 
-export const getActiveResultMessage = (insertIndex: number): string => {
-  return insertIndex === -1
+export const getActiveResultMessage = (currentIndex: number): string => {
+  return currentIndex === -1
     ? `残念、ランキング圏外だ。\nランキング入賞を目指してみよう！`
-    : insertIndex === 0
+    : currentIndex === 0
     ? `1位おめでとう！！！\n記録を更新したよ！！！`
     : `ランクインおめでとう！！！\n次は1位を目指そう！`
 }

@@ -1,6 +1,6 @@
 import type { BoardSize, Pos, Values } from '../types/type'
 import { calBom } from './bom'
-import { posEquall } from './position'
+import { posEqual } from './position'
 
 let newMadePositions: Values[] = []
 export const updatePosition = (
@@ -19,7 +19,7 @@ export const updatePosition = (
 const checkReached = (vs: Values, reachedPositions: Pos[]): boolean => {
   let res = false
   for (const item of reachedPositions) {
-    posEquall(item, vs) && (res = true)
+    posEqual(item, vs) && (res = true)
   }
   !res && reachedPositions.push({ x: vs.x, y: vs.y })
   return res

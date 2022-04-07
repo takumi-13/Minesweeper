@@ -12,13 +12,13 @@ import styled from 'styled-components'
 import { HighScoreModalTableProps } from '../../types/highScoreModal/highScoreModalTable'
 
 type TableRowProps = {
-  is_current_result: boolean
+  $isCurrentResult: boolean
 }
 const CustomTableRow = styled(TableRow)<TableRowProps>`
-  background-color: ${(props) => (props.is_current_result ? '#f3ecae68' : 'white')};
+  background-color: ${(props) => (props.$isCurrentResult ? '#f3ecae68' : 'white')};
 `
 CustomTableRow.defaultProps = {
-  is_current_result: false,
+  $isCurrentResult: false,
 }
 
 export const HighScoreModalTable: React.FC<HighScoreModalTableProps> = ({ consts }) => {
@@ -32,11 +32,11 @@ export const HighScoreModalTable: React.FC<HighScoreModalTableProps> = ({ consts
           </TableRow>
         </TableHead>
         <TableBody>
-          {consts.displayResult.map((row, index) => (
+          {consts.formattedActiveCompletedResults.map((row, index) => (
             <CustomTableRow
               key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              is_current_result={consts.isActive && index === consts.insertIndex}
+              $isCurrentResult={consts.isActive && index === consts.currentIndex}
             >
               <TableCell component="th" scope="row" align="center">
                 {index + 1}

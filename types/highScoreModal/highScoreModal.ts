@@ -1,16 +1,16 @@
-import { DifficultyFirstStates } from '../type'
+import { Difficulty, DifficultyFirstStates } from '../type'
 
 export type HighScoreModalProps = {
   states: {
     showModal: boolean
-    activeTab: string
+    activeTab: Difficulty
   }
   consts: {
-    difficulty: string
+    currentDifficulty: Difficulty
   }
   funs: {
     refreshStateWithDifficulty: (values: DifficultyFirstStates) => void
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
-    setActiveTab: React.Dispatch<React.SetStateAction<string>>
+    setActiveTab: React.Dispatch<React.SetStateAction<Difficulty>>
   }
 }

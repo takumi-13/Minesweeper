@@ -5,19 +5,21 @@ import { BoardOrigin } from '../components/board/boardOrigin'
 import { DifficultySelector } from '../components/difficultySelector/difficultySelector'
 import { HighScoreModal } from '../components/highscoreModal/highScoreModal'
 import { Container, Main } from '../components/page'
-import { BoardSize, DifficultyFirstStates, Pos } from '../types/type'
+import { BoardSize, Difficulty, DifficultyFirstStates, Pos } from '../types/type'
 import { createBom } from '../utils/bom'
-import { FIRST_STATE_COMMON, FIRST_STATE_EASY } from '../utils/firstState'
-import { saveClearResult } from '../utils/result'
+import { DIFFICULTY_SPECIAL } from '../utils/constants/difficulty'
+import { FIRST_STATE_COMMON, FIRST_STATE_EASY } from '../utils/constants/firstState'
+import { saveCompletedResult } from '../utils/result'
 
 const Home: NextPage = () => {
   if (typeof document !== 'undefined') document.oncontextmenu = () => false
 
-  const [nowFirstState, setNowFirstState] = useState<DifficultyFirstStates>(FIRST_STATE_EASY)
+  const [currentFirstState, setCurrentFirstState] =
+    useState<DifficultyFirstStates>(FIRST_STATE_EASY)
 
   const refreshStateWithDifficulty = (values: DifficultyFirstStates) => {
     refreshStateCommon()
-    setNowFirstState(values)
+    setCurrentFirstState(values)
     setBoardSize({ sizeX: values.sizeX, sizeY: values.sizeY })
     setBoard(values.board)
     setBoms(createBom(values.bomNum, values.sizeX, values.sizeY))
@@ -25,9 +27,9 @@ const Home: NextPage = () => {
 
   const refreshState = () => {
     refreshStateCommon()
-    setBoardSize({ sizeX: nowFirstState.sizeX, sizeY: nowFirstState.sizeY })
-    setBoard(nowFirstState.board)
-    setBoms(createBom(nowFirstState.bomNum, nowFirstState.sizeX, nowFirstState.sizeY))
+    setBoardSize({ sizeX: currentFirstState.sizeX, sizeY: currentFirstState.sizeY })
+    setBoard(currentFirstState.board)
+    setBoms(createBom(currentFirstState.bomNum, currentFirstState.sizeX, currentFirstState.sizeY))
   }
 
   const refreshStateCommon = () => {
@@ -37,20 +39,20 @@ const Home: NextPage = () => {
     setPushedBlockNum(0)
     countStop()
   }
-  //-1:PreStart, 0:Normal, 1:Clear, 99:Gameover
+  //-1:PreStart, 0:Normal, 1:Completed, 99:Gameover
   const [gameState, setGameState] = useState(FIRST_STATE_COMMON.gameState)
 
   // -1:爆弾, 1-8:クリック済み, 9:未クリック, 99:フラグ, 100: ?
-  const [board, setBoard] = useState(nowFirstState.board)
+  const [board, setBoard] = useState(currentFirstState.board)
   const [flgPosition, setFlgPosition] = useState<Pos[]>(FIRST_STATE_COMMON.flgPosition)
   const [count, setCount] = useState(FIRST_STATE_COMMON.count)
   const [boms, setBoms] = useState(
-    createBom(nowFirstState.bomNum, nowFirstState.sizeX, nowFirstState.sizeY)
+    createBom(currentFirstState.bomNum, currentFirstState.sizeX, currentFirstState.sizeY)
   )
   const [pushedBlockNum, setPushedBlockNum] = useState(0)
   const [boardSize, setBoardSize] = useState<BoardSize>({
-    sizeX: nowFirstState.sizeX,
-    sizeY: nowFirstState.sizeY,
+    sizeX: currentFirstState.sizeX,
+    sizeY: currentFirstState.sizeY,
   })
 
   const intervalRef = useRef<number | null>(null)
@@ -70,12 +72,13 @@ const Home: NextPage = () => {
     intervalRef.current = null
   }, [])
 
-  const setGameClear = () => {
-    saveClearResult(nowFirstState.difficulty, count)
+  const setGameCompleted = () => {
     setGameState(1)
     countStop()
-    setActiveTab(nowFirstState.difficulty)
-    nowFirstState.difficulty !== 'special' && setShowModal(true)
+    setActiveTab(currentFirstState.difficulty)
+    currentFirstState.difficulty !== DIFFICULTY_SPECIAL.difficulty && setShowModal(true)
+    currentFirstState.difficulty !== DIFFICULTY_SPECIAL.difficulty &&
+      saveCompletedResult(currentFirstState.difficulty, count)
   }
   const setGameover = () => {
     setGameState(99)
@@ -96,7 +99,7 @@ const Home: NextPage = () => {
     refreshState,
     checkGameStart,
     setGameover,
-    setGameClear,
+    setGameCompleted,
     setGameState,
     setPushedBlockNum,
     setFlgPosition,
@@ -105,7 +108,7 @@ const Home: NextPage = () => {
   }
 
   const [showModal, setShowModal] = useState(false)
-  const [activeTab, setActiveTab] = useState(nowFirstState.difficulty)
+  const [activeTab, setActiveTab] = useState<Difficulty>(currentFirstState.difficulty)
 
   return (
     <Container>
@@ -117,7 +120,7 @@ const Home: NextPage = () => {
 
       <Main>
         <DifficultySelector
-          states={{ boardSize, boms, nowFirstState }}
+          states={{ boardSize, boms, currentFirstState }}
           funs={{
             refreshStateWithDifficulty,
           }}
@@ -125,7 +128,7 @@ const Home: NextPage = () => {
         <BoardOrigin parentStates={boardStates} funs={boardFuns} />
         <HighScoreModal
           states={{ showModal, activeTab }}
-          consts={{ difficulty: nowFirstState.difficulty }}
+          consts={{ currentDifficulty: currentFirstState.difficulty }}
           funs={{ refreshStateWithDifficulty, setShowModal, setActiveTab }}
         />
       </Main>

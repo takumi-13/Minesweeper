@@ -1,7 +1,7 @@
 export type HighScoreModalTableProps = {
   consts: {
-    displayResult: string[]
-    insertIndex: number
+    formattedActiveCompletedResults: string[]
+    currentIndex: number
     isActive: boolean
   }
 }
